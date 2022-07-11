@@ -5,14 +5,14 @@ After=network.target remote-fs.target nss-lookup.target mysql.service
 
 [Service]
 Type=simple
-User=git
-Group=git
+#User=git
+#Group=git
 WorkingDirectory=/var/lib/meteo-daemon
 ExecStart=/var/lib/meteo-daemon/meteo-daemon
 Restart=always
 #AmbientCapabilities=CAP_NET_ADMIN
-AmbientCapabilities=CAP_NET_BIND_SERVICE
-CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+#AmbientCapabilities=CAP_NET_BIND_SERVICE
+#CapabilityBoundingSet=CAP_NET_BIND_SERVICE
 #AmbientCapabilities=CAP_NET_RAW
 
 [Install]
