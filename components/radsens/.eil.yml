@@ -1,0 +1,23 @@
+---
+components:
+  - name: radsens
+    description: |
+      Driver for RadSens digital radiation sensor
+    group:
+      name: radiaton
+    groups:
+      - name: radiation
+    code_owners:
+      - name: Vivask
+    depends:
+      - name: i2cdev
+      - name: log
+      - name: esp_idf_lib_helpers
+    thread_safe: yes
+    targets:
+      - name: esp32
+    licenses:
+      - name: MIT
+    copyrights:
+      - name: Vivask
+        year: 2022

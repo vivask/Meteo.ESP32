@@ -1,0 +1,43 @@
+{{ define "vpnignore" }}
+{{ template "header" .}}
+{{ template "menu" .}}
+<link rel="stylesheet" href="static/css/settings.css">
+<script async src="static/js/menu.js"></script>
+<script async src="static/js/vpnignore.js"></script>
+</head>
+<div class="proxy-flex">
+    <div class="box-menu">
+        <div class="proxy-menu">
+            <div class="proxy-menu-header">Прокси</div>
+            <a onclick="changeLocation('/verify/proxy');">DNS Серверы</a>
+            <a onclick="changeLocation('/verify/homezone');">Локальная зона</a>
+            <a onclick="changeLocation('/verify/vpnauto');">Автоматический список</a>
+            <a onclick="changeLocation('/verify/vpnmanual');">Ручной список</a>
+            <a onclick="changeLocation('/verify/vpnignore');">Игнорировать</a>
+        </div> 
+    </div>
+    <div class="content-manual-proxy">
+        <h6>Хосты исключенные из VPN тунеля</h6>
+        {{ range . }}
+        <div class="proxy-item">
+            <div class="vpn-fld0">
+                <i class="fa fa-circle proxy-host"></i>
+            </div>
+            <div class="vpn-fld1">{{SubStr .ID 0 25}}</div>
+            <div class="vpn-fld1">{{DateFmtLong .UpdatedAt}}</div>
+            <div class="item-right">
+                <button class="btn-edit" data-id="{{.ID}}" onclick="Restore(this.dataset.id);">Восстановить</button>
+                <button class="btn-del" data-id="{{.ID}}" onclick="delHost(this.dataset.id);">Удалить</button>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+    <div class="modalwin" id="popup-wait">
+        <div class="modalwin-content">
+            <div class="spinner"><div class="double-bounce1"></div>
+            <div class="double-bounce2"></div>
+        </div>
+    </div>           
+</div>
+{{ template "footer" .}}
+{{ end }}        

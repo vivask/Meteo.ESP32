@@ -1,0 +1,67 @@
+{{ define "tasks" }}
+{{ template "header" .}}
+{{ template "menu" .}}
+<link rel="stylesheet" href="static/css/settings.css">
+<script async src="static/js/menu.js"></script>
+<script async src="static/js/tasks.js"></script>
+</head>
+<div class="menu-flex">
+    <div class="box-menu">
+        <div class="vertical-menu">
+            <div class="vertical-menu-header">Планировщик</div>
+            <a onclick="changeLocation('/verify/schedule');">Расписание</a>
+            <a onclick="changeLocation('/verify/tasks');">Задачи</a>
+            <a onclick="changeLocation('/verify/cron');">Cron</a>
+        </div> 
+    </div>
+    <div class="content-flex" id="tasks">
+        <h6>Управление задачами
+            <div class="right-add-btn">
+                <div class="btn-add-key" onclick="newTask();">Добавить задачу</div>    
+            </div>
+        </h6>
+        {{ range . }}
+        <div class="item">
+            <div class="left column">
+                <i class="mega-octicon octicon-zap"></i>
+            </div>
+            <div class="left column">
+                <strong>{{ .Name }}</strong>
+                <div class="meta-jobs">
+                    <i>{{ .Note }}</i>
+                </div>
+            </div>
+            <div class="item-right">
+                <button class="btn-edit" data-id="{{ .ID }}" onclick="editTask(this.dataset.id);">Изменить</button>
+                <button class="btn-del" data-id="{{ .ID }}" data-task="{{ .Name }}" onclick="delTask(this.dataset.id, this.dataset.task);">Удалить</button>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+    <br>
+    <div class="box-content attached-segment" id="add-task">
+        <h6 id="task-add-head">Добавить задачу</h6>
+        <h6 id="task-edit-head">Изменить задачу</h6>
+        <div class="field">
+            <label class="label-jobs" for="task-id">Идентификатор</label>
+            <input id="task-id" class="fld-input" value="" required=""> 
+        </div>
+        <div class="field">
+            <label class="label-jobs" for="task-name">Наименование</label>
+            <input id="task-name" class="fld-input" value="" required=""> 
+        </div>
+         <div class="field">
+            <label class="label-jobs" for="task-note">Описание</label>
+            <input id="task-note" class="fld-input" value="" required="">
+        </div>
+        <div class="field" id="new-params">
+            <label class="label-jobs" for="add-param">Параметры</label>
+            <button class="btn-edit" id="add-param" onclick="showParams(this);">>></button>
+        </div>
+        <br>
+        <button class="btn-gren" id="task-add" onclick="addOk();">Добавить задачу</button>
+        <button class="btn-gren" id="task-edit" onclick="editOk();">Принять</button>
+    </div>
+</div>
+{{ template "footer" .}}
+{{ end }}

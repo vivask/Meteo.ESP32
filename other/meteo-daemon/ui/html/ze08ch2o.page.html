@@ -1,0 +1,33 @@
+{{ define "ze08ch2o" }}
+{{ template "header" .}}
+{{ template "menu" .}}
+<script async src="static/js/menu.js"></script>
+<script async src="static/js/ze08ch2o.js"></script>
+<script src="static/assets/Chart.js-2.9.3/Chart.min.js"></script>
+</head>
+<div>
+    <h2>ZE08CH20</h2>
+    <table class="table-canvas"><tr><td>
+        <div id="ze08ch20-cancas">
+            <canvas id="ze08ch20-chart" style="width:100%;max-width:1000px;"></canvas>
+        </div>
+    </td></tr></table>
+    <div  class="buttons">
+        <select class="cb-chart" id="period-ze08-chart" onchange="getData(currentDateTime)">
+            <option selected value="day">Сутки</option>
+            <option value="week">Неделя</option>
+            <option value="month">Месяц</option>
+            <option value="year">Год</option>
+        </select>  
+        <input class="btn chart-btn" id="ze-chart-ptev" type="button" onclick="onZeChartPrev()" value="<<"/>    
+        <input class="btn chart-btn" id="ze-chart-next" type="button" onclick="onZeChartNext()" value=">>"/>    
+    </div>
+</div>
+<div class="modalwin" id="popup-wait">
+    <div class="modalwin-content">
+        <div class="spinner"><div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+    </div>
+</div>           
+{{ template "footer" .}}
+{{ end }}

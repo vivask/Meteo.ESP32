@@ -1,0 +1,89 @@
+{{ define "controller" }}
+{{ template "header" .}}
+{{ template "menu" .}}
+<link rel="stylesheet" href="static/css/settings.css">
+<script async src="static/js/controller.js"></script>
+</head>
+<div id="pfirmware">
+    <div class="menu-flex">
+        <div class="content-flex">
+            <h6>Контроллер</h6>
+            <div class="fw-item">
+                <label id="fw_label" class="fw-labe">Файл прошивки:</label>
+                <input id="fw_file" type="file" name="uploadfile" class="fw-input-file" accept=".bin" >
+            </div>
+            <div class="fw-item">
+                <input class="fw-button btn" id="fw-save" type="button" onclick="onSaveFw()" value="Прошить!"/>
+            </div>
+            <div class="fw-item">
+                <input class="fw-button btn" id="fw-setup" type="button" onclick="onSetupMode()" value="Режим настройки!"/>
+            </div>
+            <div class="fw-item">
+                <input class="fw-button btn" id="fw-restart" type="button" onclick="onRestart()" value="Перезапуск!"/>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="pupgrade">
+    <section>
+        <div id="upgrading">
+            <div class="spinner"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>
+            <p class="tctr">Пожалуйста подождите пока ваш контроллер перезапуститься. На это может потребоваться несколько минут.</p>
+            <div class="buttons" style="height: 100px;"></div>
+        </div>
+        <div id="upgrade-success">
+            <h3 class="gr">Прошивка контроллера завершена успешно!</h3>
+        </div>
+        <div id="upgrade-fail">
+            <h3 class="rd">Ошибка прошивки контроллера</h3>
+        </div>
+        <div id="upgrade-timeout">
+            <h3 class="rd">Время ожидания истекло</h3>
+        </div>
+    </section>
+    <div class="buttons">
+        <input id="ok-upgrade" type="button" value="OK" class="btn ctr" onclick="onCancel()"/>
+    </div>
+</div>
+<div id="psetup-mode">
+    <section>
+        <div id="setuping">
+            <div class="spinner"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>
+            <p class="tctr">Пожалуйста подождите пока ваш контроллер переключится в режим настроек...</p>
+        </div>
+        <div id="setup-mode-success">
+            <h3 class="gr">Контроллер в переключен в режим настроек!</h3>
+        </div>
+        <div id="setup-mode-timeout">
+            <h3 class="rd">Время ожидания истекло</h3>
+        </div>
+    </section>
+    <div class="buttons">
+        <input id="ok-setup-mode" type="button" value="OK" class="btn ctr" onclick="onCancel()"/>
+    </div>
+</div>
+<div id="prestart">
+    <section>
+        <div id="restarting">
+            <div class="spinner"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>
+            <p class="tctr">Пожалуйста подождите пока ваш контроллер перезапуститься...</p>
+        </div>
+        <div id="restart-success">
+            <h3 class="gr">Контроллер перезапущен!</h3>
+        </div>
+        <div id="restart-timeout">
+            <h3 class="rd">Время ожидания истекло</h3>
+        </div>
+    </section>
+    <div class="buttons">
+        <input id="ok-restart" type="button" value="OK" class="btn ctr" onclick="onCancel()"/>
+    </div>
+</div>
+<div class="modalwin" id="popup-wait">
+    <div class="modalwin-content">
+        <div class="spinner"><div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+    </div>
+</div>           
+{{ template "footer" .}}
+{{ end }}

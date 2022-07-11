@@ -1,0 +1,80 @@
+{{ define "homezone" }}
+{{ template "header" .}}
+{{ template "menu" .}}
+<link rel="stylesheet" href="static/css/settings.css">
+<script async src="static/js/menu.js"></script>
+<script async src="static/js/homezone.js"></script>
+</head>
+<div class="proxy-flex">
+    <div class="box-menu">
+        <div class="proxy-menu">
+            <div class="proxy-menu-header">Прокси</div>
+            <a onclick="changeLocation('/verify/proxy');">DNS Серверы</a>
+            <a onclick="changeLocation('/verify/homezone');">Локальная зона</a>
+            <a onclick="changeLocation('/verify/vpnauto');">Автоматический список</a>
+            <a onclick="changeLocation('/verify/vpnmanual');">Ручной список</a>
+            <a onclick="changeLocation('/verify/vpnignore');">Игнорировать</a>
+        </div> 
+    </div>
+    <div class="content-manual-proxy">
+        <h6>Хосты
+            <div class="right-add-btn">
+                <div class="btn-add-key" onclick="newHost();">Добавить хост</div>    
+            </div>
+        </h6>
+        {{ range . }}
+        <div class="proxy-item">
+            <div class="left proxy-fld0">
+                <i class="fa fa-circle{{if .Active}} proxy-host-o {{else}}-o proxy-host {{ end }} "></i>
+            </div>
+            <div class="left proxy-fld1">
+                <i >{{.IPv4}}</i>
+            </div>
+            <div class="left proxy-fld2">
+                <i >{{.DomainName}}</i>
+            </div>
+            <div class="left proxy-fld2-1">
+                <i >{{.Mac}}</i>
+            </div>
+            <div class="left proxy-fld2-2">
+                <i >{{.Note}}</i>
+            </div>
+            <div class="proxy-fld3">
+                <button class="btn-edit" data-ip="{{.IPv4}}" onclick="pingHost(this.dataset.ip);">ARP</button>
+            </div>
+            <div class="proxy-fld3">
+                <button class="btn-edit" data-id="{{.ID}}" onclick="editHost(this.dataset.id);">Изменить</button>
+            </div>
+            <div class="proxy-fld3">
+                <button class="btn-del" data-id="{{.ID}}"  data-host="{{.DomainName}}" onclick="delHost(this.dataset.id, this.dataset.host);">Удалить</button>
+            </div>
+        </div>
+        {{ end }} 
+    </div>
+    <br>
+    <div class="content-manual-proxy attached-segment" id="add-host">
+        <h6 id="host-add-head">Добавить хост</h6>
+        <h6 id="host-edit-head">Изменить хост</h6>
+        <div class="field">
+            <label class="label-jobs" for="hostname">Доменное имя</label>
+            <input id="hostname" class="fld-input" type="text"   value="">
+        </div>
+        <div class="field">
+            <label class="label-jobs" for="ip-address">IP адрес</label>
+            <input id="ip-address" class="fld-input" type="text"   value="">
+        </div>
+        <div class="field">
+            <label class="label-jobs" for="mac-address">MAC адрес</label>
+            <input id="mac-address" class="fld-input" type="text"   value="">
+        </div>
+        <div class="field">
+            <label class="label-jobs" for="note">Коментарий</label>
+            <input id="note" class="fld-input" type="text"   value="">
+        </div>
+        <br>
+        <button class="btn-gren" id="host-add" onclick="addOk();">Добавить хост</button>
+        <button class="btn-gren" id="host-edit" onclick="editOk();">Принять</button>
+    </div>
+</div>
+{{ template "footer" .}}
+{{ end }}        

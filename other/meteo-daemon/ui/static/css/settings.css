@@ -1,0 +1,395 @@
+.settings-flex{
+    display: flex;
+    flex-flow: row wrap;
+    width: 980px !important;
+    padding: 12px; /* Add some padding */
+    border: 1px solid rgba(1, 1, 1, 0.25);
+    border-radius: .28571429rem .28571429rem .28571429rem .28571429rem;
+    box-shadow: none;
+    background-image: none;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.menu-flex{
+  display: flex;
+  flex-flow: row wrap;
+  width: 980px !important;
+  padding: 12px; /* Add some padding */
+  margin-top: 30px;
+  margin-left: auto;
+  margin-right: auto;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.content-flex{
+  width: 75% !important;
+  border: 1px solid rgba(1, 1, 1, 0.25);
+  border-radius: .28571429rem .28571429rem .28571429rem .28571429rem;
+  box-shadow: none;
+  background-image: none;
+  margin-left: 30px; 
+}
+
+.item{
+  display: flex;
+  border-bottom: 1px solid rgba(1, 1, 1, 0.25);
+  margin-top: 20px;
+}
+.item-right{
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-left: auto;
+  margin-right: 10px;
+}
+/* Средние экраны */
+@media all and (max-width: 800px) {
+    .navigation {
+      /* На экранах среднего размера мы центрируем элементы, равномерно распределяя пустое пространство вокруг элементов */
+      justify-content: space-around;
+    }
+  }
+  
+  /* Маленькие экраны */
+  @media all and (max-width: 500px) {
+    .navigation {
+      /* На маленьких экранах мы больше не используем направление строки, а используем столбец */
+      flex-direction: column;
+    }
+  }
+
+.settings-box{
+    width: 100%;
+    justify-content: flex-start;
+}
+
+.col-1{
+    width: 80px;
+    float: left;
+    padding: 12px;
+    margin-top: 2px;
+    float: left;
+}
+
+.col-2{
+    width: 280px;
+    float: left;
+    padding: 12px;
+    margin-top: 2px;
+    float: left;
+}
+
+.col-3{
+    width: calc(50% - 0px);
+    float: left;
+    margin-bottom: 5px;
+    float: left;
+}
+
+.col-4{
+    float: left;
+    padding: 12px;
+    float: left;
+}
+
+#select-valve-disabled{
+  width: calc(50% + 5px);
+  float: left;
+  margin-bottom: 5px;
+  float: left;
+}
+
+.top-border{
+  border-top: 1px solid rgba(1, 1, 1, 0.25);
+  padding-top: 20px;
+}
+
+.fw-item{
+  display: flex;
+  flex-flow: row wrap;
+  margin-top: 5px;
+}
+
+.fw-labe{
+  float: left;
+  width: 140px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color: rgb(24, 26, 27);
+  border: 1px solid rgba(34,36,38,.15);
+  border-radius: .28571429rem;
+  color: white;
+}
+
+.fw-input-file{
+  width: 560px;
+  border: 1px solid rgba(34,36,38,.15);
+  background-color: rgb(24, 26, 27);
+  border-radius: .28571429rem;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 14px;
+  padding-left: 10px;
+  cursor: pointer;
+  color: white;
+}
+
+.fw-button{
+  width: 100%;
+}
+
+.content-proxy{
+  width: 480px !important;
+  border: 1px solid rgba(1, 1, 1, 0.25);
+  border-radius: .28571429rem .28571429rem .28571429rem .28571429rem;
+  box-shadow: none;
+  background-image: none;
+  margin-left: 30px; 
+}
+
+.bottom-item{
+  display: flex;
+  flex-flow: row wrap;
+  margin-top: 20px;
+}
+
+.proxy-menu {
+  width: 250px; /* Set a width if you like */
+  border: 1px solid rgba(1, 1, 1, 0.25);
+  border-radius: .28571429rem .28571429rem .28571429rem .28571429rem;
+  box-shadow: none;
+  background-image: none;
+  display: block;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  flex-direction: column;
+}
+
+.proxy-menu-header {
+  background-image: none;
+  font-size: 1.1em;
+  margin: 0;
+  font-weight: 700;
+  padding: 12px; /* Add some padding */
+  border-bottom: 1px solid rgba(1, 1, 1, 0.25);
+}
+
+.proxy-menu a {
+  color: black; /* Black text color */
+  display: block; /* Make the links appear below each other */
+  padding: 12px; /* Add some padding */
+  text-decoration: none; /* Remove underline from links */
+  cursor: pointer;
+}
+
+.proxy-menu a:hover {
+  background-color: rgb(175, 180, 182);/* Dark grey background on mouse-over */
+}
+
+.proxy-item{
+  display: flex;
+  border-bottom: 1px solid rgba(1, 1, 1, 0.25);
+}
+
+.proxy-host{
+  padding-right: 10px;
+  color: rgb(153, 159, 150);
+}
+
+.proxy-host-o{
+  padding-right: 10px;
+  color: rgb(121, 203, 85);
+}
+
+.proxy-fld0{
+  flex-basis: 15px;
+  margin-left: 15px;
+	flex-grow: 0;
+	flex-shrink: 0;
+  padding-top: 10px; 
+}
+
+.proxy-fld1{
+  width: 100px;
+  flex-basis: 100px;
+	flex-grow: 0;
+	flex-shrink: 0;
+  color: rgb(88, 84, 79);
+  font-size: 14px;
+  text-align: left;
+  padding-top: 10px; 
+}
+
+.proxy-fld2{
+  width: 140px;
+  flex-basis: 140px;
+	flex-grow: 0;
+	flex-shrink: 0;
+  color: rgb(88, 84, 79);
+  font-size: 14px;
+  text-align: left; 
+  padding-top: 10px; 
+}
+
+.proxy-fld2-1{
+  width: 130px;
+  flex-basis: 130px;
+	flex-grow: 0;
+	flex-shrink: 0;
+  color: rgb(88, 84, 79);
+  font-size: 14px;
+  text-align: left; 
+  padding-top: 10px; 
+}
+
+.proxy-fld2-2{
+  width: 105px;
+  flex-basis: 105px;
+	flex-grow: 0;
+	flex-shrink: 0;
+  color: rgb(88, 84, 79);
+  font-size: 14px;
+  text-align: left; 
+  padding-top: 10px; 
+}
+
+.proxy-fld2-left{ 
+  width: 390px;
+  color: rgb(88, 84, 79);
+  font-size: 12px;
+  text-align: left; 
+  padding-right: 30px;
+}
+
+.proxy-fld3{
+  margin-left: 5px;
+}
+
+.proxy-flex{
+  display: flex;
+  flex-flow: row wrap;
+  width: 1080px !important;
+  padding: 12px; /* Add some padding */
+  margin-top: 30px;
+  margin-left: auto;
+  margin-right: auto;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.content-manual-proxy{
+  width: 780px !important;
+  border: 1px solid rgba(1, 1, 1, 0.25);
+  border-radius: .28571429rem .28571429rem .28571429rem .28571429rem;
+  box-shadow: none;
+  background-image: none;
+  margin-left: 30px; 
+}
+
+#hostname,
+#note,
+#ip-address,
+#mac-address
+{
+    width: calc(81% - 8px);
+    margin-right: 10px;
+    float: right;
+}
+
+#add-host{
+  display: none;
+}
+
+#access-list
+{
+    width: calc(81% - 0px);
+    margin-right: 10px;
+    float: right;
+}
+
+.box-sync-content{
+  width: 35% !important;
+  border: 1px solid rgba(1, 1, 1, 0.25);
+  border-radius: .28571429rem .28571429rem .28571429rem .28571429rem;
+  box-shadow: none;
+  background-image: none;
+  flex-wrap: nowrap;
+  margin-left: 30px;
+  justify-content: space-between;
+}
+
+.vpn-fld0{
+  flex-basis: 15px;
+  margin-left: 15px;
+	flex-grow: 0;
+	flex-shrink: 0;
+  padding-top: 12px; 
+  padding-bottom: 12px;
+}
+
+.vpn-fld1{
+  width: 200px;
+  flex-basis: 220px;
+	flex-grow: 0;
+	flex-shrink: 0;
+  color: rgb(88, 84, 79);
+  font-size: 14px;
+  text-align: left;
+  padding-top: 12px; 
+}
+
+
+.vpn-fld2{ 
+  width: 50px;
+  flex-basis: 50px;
+	flex-grow: 0;
+	flex-shrink: 0;
+  color: rgb(88, 84, 79);
+  font-size: 14px;
+  text-align: left; 
+  padding-top: 12px; 
+}
+
+.vpn-fld3{
+  margin-left: 5px;
+}
+
+.vpn-fld4{ 
+  width: 40px;
+  flex-basis: 40px;
+	flex-grow: 0;
+	flex-shrink: 0;
+  color: rgb(88, 84, 79);
+  font-size: 14px;
+  text-align: left; 
+  padding-right: 30px;
+}
+
+
+.table-fld0{
+  flex-basis: 15px;
+  margin-left: 15px;
+	flex-grow: 0;
+	flex-shrink: 0;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.table-fld1{
+  width: 150px;
+  flex-basis: 150px;
+	flex-grow: 0;
+	flex-shrink: 0;
+  color: rgb(88, 84, 79);
+  font-size: 14px;
+  text-align: left;
+  padding-top: 10px;
+}
+
+.verbose{
+  margin-top: 5px;
+}

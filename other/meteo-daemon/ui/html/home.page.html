@@ -1,0 +1,133 @@
+{{ define "home" }}
+{{ template "header" }}
+{{ template "menu" }}
+<script async src="static/js/home.js"></script>
+</head>
+<br>
+<div>
+    <table class="control-table">
+        <tr class="row_1">
+            <td onclick="selectLocation('/bme280')" onmouseover='td_in("bme280", "label-icon bme280-blue");' onmouseout='td_out("bme280", "label-icon bme280-white");'>
+                <form>
+                    <label class="label-icon bme280-white" id="bme280" >BME280</label>
+                    <p></p>
+                    <table>
+                        <tr>
+                            <td><label class="before-data-fld">Температура:</label></td>
+                            <td style="width: 400px;text-align: right;"><label class="data-fld" id="bme280_t"></label></td>
+                            <td><label class="after-data-fld">°C</label></td>
+                            <td><input id="t-alarm" class="btn-alarm" type="button" onclick="onBme280TemperatureCheck()"/></td>
+                        </tr>
+                        <tr>
+                            <td><label class="before-data-fld">Давление:</label></td>
+                            <td style="width: 400px;text-align: right;"><label class="data-fld" id="bme280_p"></label></td>
+                            <td><label class="after-data-fld">mmHg</label></td>
+                        </tr>
+                        <tr>
+                            <td><label class="before-data-fld">Влажность: </label></td>
+                            <td style="width: 400px;text-align: right;"><label class="data-fld" id="bme280_h"></label></td>
+                            <td><label class="after-data-fld">%</label></td>
+                        </tr>
+                    </table> 
+                </form>
+            </td>
+            <td onclick="selectLocation('/mics6814')" onmouseover='td_in("mics6814", "label-icon mics6814-blue");' onmouseout='td_out("mics6814", "label-icon mics6814-white");'>
+                <form>
+                    <label class="label-icon mics6814-white" id="mics6814" >MICS-6814</label>
+                    <p></p>
+                    <table>
+                        <tr>
+                            <td><label class="before-data-fld">NH3: </label></td>
+                            <td style="width: 300px;text-align: right;"><label class="data-fld" id="nh3"></label></td>
+                            <td><label class="after-data-fld">мг/м3</label></td>
+                            <td><input id="nh3-alarm" class="btn-alarm" type="button" onclick="onNh3Check()"/></td>
+                        </tr>
+                        <tr>
+                            <td><label class="before-data-fld">CO: </label></td>
+                            <td style="width: 300px;text-align: right;"><label class="data-fld" id="co"></label></td>
+                            <td><label class="after-data-fld">мг/м3</label></td>
+                            <td><input id="co-alarm" class="btn-alarm" type="button" onclick="onCoCheck()"/></td>
+                        </tr>
+                        <tr>
+                            <td><label class="before-data-fld">NO2: </label></td>
+                            <td style="width: 300px;text-align: right;"><label class="data-fld" id="no2"></label></td>
+                            <td><label class="after-data-fld">мг/м3</label></td>
+                            <td><input id="no2-alarm" class="btn-alarm" type="button" onclick="onNo2Check()"/></td>
+                        </tr>
+                    </table>
+                </form>
+            </td>
+            <td onclick="selectLocation('/radsens')" onmouseover='td_in("radsens", "label-icon radsens-blue");' onmouseout='td_out("radsens", "label-icon radsens-white");'>
+                <form>
+                    <label class="label-icon radsens-white" id="radsens" >RadSens</label>
+                    <p></p>
+                    <table>
+                        <tr>
+                            <td><label class="before-data-fld">Стат. ИИ: </label></td>
+                            <td style="width: 300px;text-align: right;"><label class="data-fld" id="rad_stat"></label></td>
+                            <td><label class="after-data-fld">мкР/ч</label></td>
+                            <td><input id="rad-stat-alarm" class="btn-alarm" type="button" onclick="onRadStatCheck()"/></td>
+                        </tr>
+                        <tr>
+                            <td><label class="before-data-fld">Дин. ИИ: </label></td>
+                            <td style="width: 300px;text-align: right;"><label class="data-fld" id="rad_dyn"></label></td>
+                            <td><label class="after-data-fld">мкР/ч</label></td>
+                            <td style="width: 24px;"><input id="rad-dyn-alarm" class="btn-alarm" type="button" onclick="onRadDynCheck()"/></td>
+                        </tr>
+                    </table>
+                    <table>
+                        <tr>
+                            <td><label class="before-data-fld">Генератор: </label></td>
+                            <td style="width: 300px;"><input id="rad-hv" class="btn-controll" type="button" onclick="onRadHV(this)" value="Включен"/></td>
+                        </tr>
+                    </table>
+                </form>
+            </td>
+        </tr>
+        <tr class="row_2">
+            <td onclick="selectLocation('/ds18b20')" onmouseover='td_in("ds18b20", "label-icon ds18b20-blue");' onmouseout='td_out("ds18b20", "label-icon ds18b20-white");'>
+                <form>
+                    <label class="label-icon ds18b20-white" id="ds18b20" >DS18B20</label>
+                    <p></p>
+                    <table>
+                        <tr>
+                            <td><label class="before-data-fld">Температура: </label></td>
+                            <td style="width: 400px;text-align: right;"><label class="data-fld" id="ds18b20_t"></label></td>
+                            <td><label class="after-data-fld">°C</label></td>
+                            <td><input id="ds18b20-alarm" class="btn-alarm" type="button" onclick="onDs18b20Check()"/></td>
+                        </tr>
+                    </table>
+                </form>
+            </td>
+            <td onclick="selectLocation('/ze08ch2o')" onmouseover='td_in("ze08", "label-icon ze08-blue");' onmouseout='td_out("ze08", "label-icon ze08-white");'>
+                <form>
+                    <label class="label-icon ze08-white" id="ze08" >ZE08CH2O</label>
+                    <p></p>
+                    <table>
+                        <tr>
+                            <td><label class="before-data-fld">CH2O: </label></td>
+                            <td style="width: 300px;text-align: right;"><label class="data-fld" id="ch2o"></label></td>
+                            <td><labe class="after-data-fld"l>ppm</label></td>
+                            <td><input id="ch2o-alarm" class="btn-alarm" type="button" onclick="onZe08Check()"/></td>
+                        </tr>
+                    </table>
+                </form>
+            </td>
+            <td onclick="selectLocation('/valve')">
+                <form>
+                    <label class="label-icon valve-open-white" id="valve" >Клапан</label>
+                    <p></p>
+                    <table>
+                        <tr>
+                            <td><label class="before-data-fld">Состояние: </label></td>
+                            <td style="width: 300px;"><input id="valve-state" class="btn-controll" type="button" onclick="onValve()" value="Открыт"/></td>
+                        </tr>
+                    </table>
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="result"></div>
+{{ template "footer" }}
+{{ end }}

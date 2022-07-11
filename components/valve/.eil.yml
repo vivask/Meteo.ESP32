@@ -1,0 +1,21 @@
+---
+components:
+  - name: valve
+    description: |
+      Driver for salenoid Valve control
+    group:
+      name: valve
+    groups:
+      - name: valve
+    code_owners:
+      - name: Vivask
+    depends:
+      - name: log
+    thread_safe: yes
+    targets:
+      - name: esp32
+    licenses:
+      - name: MIT
+    copyrights:
+      - name: Vivask
+        year: 2022

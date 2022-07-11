@@ -1,0 +1,79 @@
+{{ define "sync" }}
+{{ template "header" .}}
+{{ template "menu" .}}
+<link rel="stylesheet" href="static/css/settings.css">
+<link rel="stylesheet" href="static/css/signup.css">
+<link rel="stylesheet" href="static/css/sync.css">
+<script async src="static/js/menu.js"></script>
+<script async src="static/js/sync.js"></script>
+</head>
+<div class="ssh-box">
+    <div class="box-menu">
+        <div class="vertical-menu">
+            <div class="vertical-menu-header">База данных</div>
+            <a onclick="changeLocation('/verify/tables');">Таблицы</a>
+            <a onclick="changeLocation('/verify/sync');">Синхронизация</a>
+        </div> 
+    </div>
+    <div class="box-sync-content" id="master">
+        <h6>Master
+            <div class="right margin-top-5 all-sync-btn-width" >
+                <input class="btn-all-sync" id="master-sync" type="button" onclick="SyncMasterTables()" value=">>" disabled/>
+            </div>
+        </h6>
+        {{ range . }}
+        <div class="proxy-item"> 
+            <div class="left master-select-fld">
+                <select class="sync-input" id="master-select-{{.ID}}">
+                    {{ range .Params }}
+                    <option value="{{.SyncType}}">{{.SyncType}}</option>
+                    {{ end }}
+                </select>
+            </div>
+            <div class="left table-fld">
+                <input id="master-chk-{{.ID}}" class="remember" type="checkbox" value="" tabindex="0" data-id="{{ .ID }}" onclick="chbMasterClick(this, this.dataset.id);">
+                <label for="master-chk-{{.ID}}" class="lrem">{{ .ID }}</label>
+            </div>
+            <div class="item-right">
+                <button class="btn-sync" data-id="{{ .ID }}" onclick="SyncMasterTable(this.dataset.id);">>></button>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+    <div class="box-sync-content" id="slave">
+        <h6>
+            <div class="left margin-top-5 all-sync-btn-width">
+                <input class="btn-all-sync" id="slave-sync" type="button" onclick="SyncSlaveTables()" value="<<" disabled/>
+            </div>
+            <div class="slave">
+                <i>Slave</i>
+            </div>
+        </h6>
+        {{ range . }}
+        <div class="proxy-item">
+            <div class="left slave-fld0">
+                <button class="btn-sync" data-id="{{ .ID }}" onclick="SyncSlaveTable(this.dataset.id);"><<</button>
+            </div>
+            <div class="left table-fld">
+                <input id="slave-chk-{{.ID}}" class="remember" type="checkbox" value="" tabindex="0" data-id="{{ .ID }}" onclick="chbSlaveClick(this, this.dataset.id);">
+                <label for="slave-chk-{{.ID}}" class="lrem">{{ .ID }}</label>
+            </div>
+            <div class="item-right slave-select-fld">
+                <select class="sync-input" id="slave-select-{{.ID}}">
+                    {{ range .Params }}
+                    <option value="{{.SyncType}}">{{.SyncType}}</option>
+                    {{ end }}
+                </select>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+    <div class="modalwin" id="popup-wait">
+        <div class="modalwin-content">
+            <div class="spinner"><div class="double-bounce1"></div>
+            <div class="double-bounce2"></div>
+        </div>
+    </div>           
+</div>
+{{ template "footer" .}}
+{{ end }}

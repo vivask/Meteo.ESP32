@@ -1,0 +1,104 @@
+{{ define "settings" }}
+{{ template "header" .}}
+{{ template "menu" .}}
+<link rel="stylesheet" href="static/css/settings.css">
+<script async src="static/js/menu.js"></script>
+<script async src="static/js/settings.js"></script>
+</head>
+<div id="psettings">
+    <div class="settings-flex">
+        <div class="settings-box">
+            <h6>Уставки</h6>
+            <label class="col-1">BME280:</label>   
+            <label class="col-2">Минимальная температура:</label>
+            <input class="col-3 fld-input" id="bme280_min_t_text" type="text" oninput="validate()"/>
+            <label class="col-4">°C</label>
+        </div>
+        <div class="settings-box">
+            <label class="col-1">BME280:</label>
+            <label class="col-2">Максимальная температура:</label>
+            <input class="col-3 fld-input" id="bme280_max_t_text" type="text" oninput="validate()"/>
+            <label class="col-4">°C</label>
+        </div>
+        <div class="settings-box">
+            <label class="col-1" id="left-pos">6814:</label>
+            <label class="col-2">Предельная концентация NH3:</label>
+            <input class="col-3 fld-input" id="nh3_text" type="text" oninput="validate()"/>
+            <label class="col-4" id="right-pos">мг/м3</label>
+        </div>
+        <div class="settings-box">
+            <label class="col-1">6814:</label>
+            <label class="col-2">Предельная концентация CO:</label>
+            <input class="col-3 fld-input" id="co_text" type="text" oninput="validate()"/>
+            <label class="col-4">мг/м3</label>
+        </div>
+        <div class="settings-box">
+            <label class="col-1">6814:</label>
+            <label class="col-2">Предельная концентация NO2:</label>
+            <input class="col-3 fld-input" id="no2_text" type="text" oninput="validate()"/>
+            <label class="col-4">мг/м3</label>
+        </div>
+        <div class="settings-box">
+            <label class="col-1">RadSens:</label>
+            <label class="col-2">Предельная статическая ИИ:</label>
+            <input class="col-3 fld-input" id="rad_stat_text" type="text" oninput="validate()"/>
+            <label class="col-4">мкР/ч</label>
+        </div>
+        <div class="settings-box">
+            <label class="col-1">RadSens:</label>
+            <label class="col-2">Предельная динамическая ИИ:</label>
+            <input class="col-3 fld-input" id="rad_dyn_text" type="text" oninput="validate()"/>
+            <label class="col-4">мкР/ч</label>
+        </div>
+        <div class="settings-box">
+            <label class="col-1">RadSens:</label>
+            <label class="col-2">Чувствительность:</label>
+            <input class="col-3 fld-input" id="rad_sensitivity_text" type="text" oninput="validate()"/>
+            <label class="col-4">ед.</label>
+        </div>
+        <div class="settings-box">
+            <label class="col-1">DS18B20:</label>
+            <label class="col-2">Максимальная температура:</label>
+            <input class="col-3 fld-input" id="ds18b20_max_text" type="text" oninput="validate()"/>
+            <label class="col-4">°C</label>
+        </div>
+        <div class="settings-box">
+            <label class="col-1">DS18B20:</label>
+            <label class="col-2">Минимальная температура:</label>
+            <input class="col-3 fld-input" id="ds18b20_min_text" type="text" oninput="validate()"/>
+            <label class="col-4">°C</label>
+        </div>
+        <div class="settings-box">
+            <label class="col-1">ZE08CH20:</label>
+            <label class="col-2">Предельная концентрация:</label>
+            <input class="col-3 fld-input" id="ze08_text" type="text" oninput="validate()"/>
+            <label class="col-4">ppm</label>
+        </div>
+        <div class="settings-box">
+            <label class="col-1">Клапан:</label>
+            <label class="col-2">Макс. температура:</label>
+            <input class="col-3 fld-input" id="valve_max_text" type="text" oninput="validate()"/>
+            <label class="col-4">°C</label>
+        </div>
+        <div class="settings-box">
+            <label class="col-1">Клапан:</label>
+            <label class="col-2">Мин. температура:</label>
+            <input class="col-3 fld-input" id="valve_min_text" type="text" oninput="validate()"/>
+            <label class="col-4">°C</label>
+        </div>
+        <div class="settings-box">
+            <label class="col-1">Клапан:</label>
+            <label class="col-2">Заблокирован:</label>
+            <select class="fld-input" id="select-valve-disabled">
+                <option value="yes">Да</option>
+                <option selected value="no">Нет</option>
+            </select>  
+    </div>
+        <div class="settings-box top-border">
+            <input type="button" value="Сохранить" class="btn-gren" onclick="onSaveSets()"/>
+    </div>
+        </div>
+    </div>
+</div>
+{{ template "footer" .}}
+{{ end }}

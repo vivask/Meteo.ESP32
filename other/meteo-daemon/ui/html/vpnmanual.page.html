@@ -1,0 +1,72 @@
+{{ define "vpnmanual" }}
+{{ template "header" .}}
+{{ template "menu" .}}
+<link rel="stylesheet" href="static/css/settings.css">
+<script async src="static/js/menu.js"></script>
+<script async src="static/js/vpnmanual.js"></script>
+</head>
+<div class="proxy-flex">
+    <div class="box-menu">
+        <div class="proxy-menu">
+            <div class="proxy-menu-header">Прокси</div>
+            <a onclick="changeLocation('/verify/proxy');">DNS Серверы</a>
+            <a onclick="changeLocation('/verify/homezone');">Локальная зона</a>
+            <a onclick="changeLocation('/verify/vpnauto');">Автоматический список</a>
+            <a onclick="changeLocation('/verify/vpnmanual');">Ручной список</a>
+            <a onclick="changeLocation('/verify/vpnignore');">Игнорировать</a>
+        </div> 
+    </div>
+    <div class="content-manual-proxy">
+        <h6>Хосты направленные в VPN тунель
+            <div class="right-add-btn">
+                <div class="btn-add-key" onclick="newHost();">Добавить хост</div>    
+            </div>
+        </h6>
+        {{ range .Hosts }}
+        <div class="proxy-item">
+            <div class="vpn-fld0">
+                <i class="fa fa-circle proxy-host"></i>
+            </div>
+            <div class="vpn-fld1">{{.Name}}</div>
+            <div class="vpn-fld2">{{.ListID}}</div>
+            <div class="vpn-fld1">{{.Note}}</div>                                       
+            <div class="item-right">
+                <button class="btn-edit" data-id="{{.ID}}" onclick="editHost(this.dataset.id);">Изменить</button>
+                <button class="btn-del" data-id="{{.ID}}"  data-host="{{.Name}}" onclick="delHost(this.dataset.id, this.dataset.host);">Удалить</button>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+    <br>
+    <div class="content-manual-proxy attached-segment" id="add-host"> 
+        <h6 id="host-add-head">Добавить хост</h6>
+        <h6 id="host-edit-head">Изменить хост</h6>
+        <div class="field">
+            <label class="label-jobs" for="hostname">Имя/IP адрес хоста</label>
+            <input id="hostname" class="fld-input" type="text"   value="">
+        </div>
+        <div class="field">
+            <label class="label-jobs" for="access-list">Список доступа</label>
+            <select class="fld-input" id="access-list">
+                {{ range .Lists }}
+                <option value="{{.ID}}">{{.ID}}</option>
+                {{ end }}
+            </select>
+        </div>
+        <div class="field">
+            <label class="label-jobs" for="note">Коментарий</label>
+            <input id="note" class="fld-input" type="text"   value="">
+        </div>
+        <br>
+        <button class="btn-gren" id="host-add" onclick="addOk();">Добавить хост</button>
+        <button class="btn-gren" id="host-edit" onclick="editOk();">Принять</button>
+    </div>
+    <div class="modalwin" id="popup-wait">
+        <div class="modalwin-content">
+            <div class="spinner"><div class="double-bounce1"></div>
+            <div class="double-bounce2"></div>
+        </div>
+    </div>           
+</div>
+{{ template "footer" .}}
+{{ end }}        

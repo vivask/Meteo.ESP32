@@ -1,0 +1,69 @@
+{{ define "ssh" }}
+{{ template "header" .}}
+{{ template "menu" .}}
+<link rel="stylesheet" href="static/css/settings.css">
+<script async src="static/js/menu.js"></script>
+<script async src="static/js/ssh.js"></script>
+</head>
+<div class="menu-flex">
+    <div class="box-menu">
+        <div class="vertical-menu">
+            <div class="vertical-menu-header">Безопасность</div>
+            <a onclick="changeLocation('/verify/ssh');">SSH Ключи</a>
+            <a onclick="changeLocation('/verify/knowhosts');">SSH Хосты</a>
+            <a onclick="changeLocation('/verify/gitkeys');">Git Ключи</a>
+            <a onclick="changeLocation('/verify/gitusers');">Git Пользователи</a>
+        </div> 
+    </div>
+    <div class="content-flex">
+        <h6>Управление ключами SSH
+            <div class="right-add-btn">
+                <div class="btn-add-key" onclick="ShowForm('add-keys');">Добавить ключ</div>    
+            </div>
+        </h6>
+        {{ range . }}
+        <div class="item">
+            <div class="left">
+                <i class="fa fa-circle{{if .HasRecentActivity}} ssh-key-active{{else}}-o ssh-key-inactive{{end}}"></i>
+            </div>
+            <div class="left column">
+                <i class="mega-octicon octicon-key"></i>
+            </div>
+            <div class="left column">
+                <strong>{{ .Owner }}</strong>
+                <div class="meta">{{.ShortFinger}}</div>
+                <div class="meta">
+                    <i>
+                        Добавлено
+                        <span>{{ DateFmtLong .CreatedAt }}</span>
+                        {{ if NotZeroTime .UpdatedAt }}
+                        —
+                        <i class="octicon octicon-info"></i>
+                        Последний раз использовался
+                        <span>{{ DateFmtLong .UpdatedAt }}</span>
+                        {{ end }}
+                    </i>
+                </div>
+            </div>
+            <div class="item-right">
+                <button class="btn-del" data-id="{{.ID}}" data-owner="{{.Owner}}" onclick="deleteKey(this.dataset.id, this.dataset.owner);">Удалить</button>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+    <br>
+    <div class="box-content attached-segment" id="add-keys">
+        <h6>Добавить SSH ключ</h6>
+            <div class="field">
+                <label for="title">Имя ключа</label>
+                <input id="title" class="fld-input" name="title" value="" autofocus="" required="">
+            </div>
+            <div class="field">
+                <label for="content">Содержимое</label>
+                <textarea id="content" class="fld-input" name="content" required=""></textarea>
+            </div>
+            <button class="btn-gren" onclick="addKey();">Добавить ключ</button>
+    </div>
+</div>
+{{ template "footer" .}}
+{{ end }}

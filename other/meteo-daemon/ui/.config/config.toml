@@ -1,0 +1,147 @@
+[App]
+Title = "meteo-daemon"
+Master = true
+Protocol = "https"
+LocalAddr = "192.168.1.3"
+LocalPort = 443
+RemoteAddr = "192.168.1.5"
+RemotePort = 443
+CAFile = "/var/lib/meteo-daemon/.config/certs/MeteoCA.crt"
+CertFile = "/var/lib/meteo-daemon/.config/certs/client.crt"
+KeyFile = "/var/lib/meteo-daemon/.config/certs/client.key"
+StorageMountPoint = "/home/samba/storage"
+SmbMountUnit = "home-samba.mount"
+StorageMountTimeout = 10
+LogPath = "/var/log/meteo-daemon"
+LogFile = "meteo.log"
+LogLevel = "info"
+
+[Cluster]
+Title = "Cluster"
+BindAddr = "192.168.1.3"
+BindPort = 10000
+Interface = "eth0"
+VirtualIP = "192.168.1.9"
+LogFile = "cluster.log"
+LogLevel = "info"
+
+[Database]
+Title = "Db"
+Driver = "mysql"
+Host = "127.0.0.1"
+Port = 3306
+Schema = "ESP8266"
+User = ""
+Password = ""
+Sync = true
+IgnoreSync = ["knowhosts"]
+LogFile = "db.log"
+LogLevel = "info"
+
+[WebServer]
+Title = "Web"
+Active = true
+HttpAddr = "0.0.0.0"
+HttpPort = 443
+CertFile = "/var/lib/meteo-daemon/.config/certs/192.168.1.9.crt"
+KeyFile = "/var/lib/meteo-daemon/.config/certs/192.168.1.9.key"
+TLSMinVersion = "TLS12"
+UiPath = "./ui/html/"
+ControlMAC = "no"
+MAC = ""
+UploadPath = "ui/static/upload"
+LogFile = "web.log"
+LogLevel = "debug"
+
+[Telegram]
+Title = "Telegram"
+Active = true
+Url = "https://api.telegram.org/bot"
+Key = ""
+ChatId = 0
+#LogFile = "telegram.log"
+LogLevel = "info"
+
+[Mikrotik]
+Title = "Mikrotik"
+Active = true
+Hosts = ["192.168.1.1", "192.168.1.6", "192.168.1.7", "192.168.1.16"]
+Ports = ["22", "22", "22", "22"]
+Users = ["", "", "", ""]
+GitRepo = ""
+#----Byfly----
+PPPHost = "192.168.1.1"
+PPPPort = "22"
+PPPUser = "manager"
+PPPIface = "ByFly"
+PPPScript = "ppp-restart"
+#----Byfly----
+#----Unlock----
+VPNHost = "192.168.1.1"
+VPNPort = "22"
+VPNUser = ""
+VPNList = ""
+#----Unlock----
+LogFile = "mikrotik.log"
+LogLevel = "info"
+
+
+[Scheduler]
+Title = "Scheduler"
+Active = true
+LogFile = "scheduler.log"
+LogLevel = "info"
+
+[AuthService]
+Title = "Auth"
+Active = true
+AccessTokenPrivateKeyPath = "/var/lib/meteo-daemon/.config/access-private.pem"
+AccessTokenPublicKeyPath = "/var/lib/meteo-daemon/.config/access-public.pem"
+RefreshTokenPrivateKeyPath = "/var/lib/meteo-daemon/.config/refresh-private.pem"
+RefreshTokenPublicKeyPath = "/var/lib/meteo-daemon/.config/refresh-public.pem"
+MailVerifCodeExpiration = 24
+PassResetCodeExpiration = 15
+JwtExpiration = 5
+JwtKey = ""
+#LogFile = "auth.log"
+LogLevel = "info"
+
+[Mail]
+Title = "Mail"
+Active = true
+MailChimpApiKey = ""
+MailChipListId = ""
+MailVerifCodeExpiration = 24
+PassResetCodeExpiration = 15
+MailVerifTemplateID = ""
+PassResetTemplateID = ""
+#LogFile = "mail.log"
+LogLevel = "info"
+
+[Proxy]
+Title = "Proxy"
+Active = true
+Listen = "0.0.0.0"
+UDPPort = 53
+TCPPort = 53
+EvictMetrics = false
+VpnNS = ["8.8.8.8"]
+DirectNS = ["1.1.1.1"]
+ProviderNS = [""]
+LocalResolvers = ["127.0.0.1"]
+Cached = true
+CacheSize = 0
+Unlocker = true
+HostsFile = ".config/dns/home.conf"
+BlockListOn = true
+Blocklist = ["https://someonewhocares.org/hosts/zero/hosts", 
+             "https://adaway.org/hosts.txt",
+             "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext",
+             "https://cdn.jsdelivr.net/gh/evankrob/hosts-filenetrehost@master/ad_servers.txt",
+             "https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt"]
+UpdateInterval = "24h"
+UpdateTime = "05:30:00"
+BlockAddress4 = "127.0.0.1"
+BlockAddress6 = "0:0:0:0:0:0:0:0"
+LogFile = "proxy.log"
+LogLevel = "info"

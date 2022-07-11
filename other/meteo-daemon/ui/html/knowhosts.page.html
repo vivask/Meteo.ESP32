@@ -1,0 +1,52 @@
+{{ define "knowhosts" }}
+{{ template "header" .}}
+{{ template "menu" .}}
+<link rel="stylesheet" href="static/css/settings.css">
+<script async src="static/js/menu.js"></script>
+<script async src="static/js/knowhosts.js"></script>
+</head>
+<div class="menu-flex">
+    <div class="box-menu">
+        <div class="vertical-menu">
+            <div class="vertical-menu-header">Безопасность</div>
+            <a onclick="changeLocation('/verify/ssh');">SSH Ключи</a>
+            <a onclick="changeLocation('/verify/knowhosts');">SSH Хосты</a>
+            <a onclick="changeLocation('/verify/gitkeys');">Git Ключи</a>
+            <a onclick="changeLocation('/verify/gitusers');">Git Пользователи</a>
+        </div> 
+    </div>
+    <div class="content-flex">
+        <h6>Управление хостами</h6>
+        {{range .}}
+        <div class="item">
+            <div class="left">
+                <i class="fa fa-circle{{if .HasRecentActivity}} ssh-key-active{{else}}-o ssh-key-inactive{{end}}"></i>
+            </div>
+            <div class="left column">
+                <i class="mega-octicon octicon-key"></i>
+            </div>
+            <div class="left column">
+                <strong>{{ .Host }}</strong>
+                <div class="meta">{{ .ShortFinger }}</div>
+                <div class="meta">
+                    <i>
+                        Добавлено
+                        <span>{{ DateFmtLong .CreatedAt }}</span>
+                        {{ if NotZeroTime .UpdatedAt }}
+                        —
+                        <i class="octicon octicon-info"></i>
+                        Последний раз использовался<br>
+                        <span>{{ DateFmtLong .UpdatedAt }}</span>
+                        {{ end }}
+                    </i>
+                </div>
+            </div>
+            <div class="item-right">
+                <button class="btn-del" data-id="{{.ID}}" data-host="{{.Host}}" onclick="deleteHost(this.dataset.id, this.dataset.host);">Удалить</button>
+            </div>
+        </div>
+        {{end}}
+    </div>
+</div>
+{{ template "footer" .}}
+{{ end }}

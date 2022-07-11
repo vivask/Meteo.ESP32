@@ -1,0 +1,37 @@
+{{ define "login" }}
+{{ template "header" .}}
+{{ template "menu" .}}
+<link rel="stylesheet" href="static/css/settings.css">
+<link rel="stylesheet" href="static/css/signup.css">
+<script async src="static/js/menu.js"></script>
+<script async src="static/js/login.js"></script>
+</head>
+<div>
+    <div class="menu-flex">
+        <div class="content-flex">
+            <h6 class="sign-h">Вход</h6>
+            <div class="sign-item">
+                <label for="username" class="sign-label">Имя пользователя</label>
+                <input id="username" class="fld-input sign-input" value="" required>
+            </div>
+            <div class="sign-item">
+                <label for="password" class="sign-label">Пароль</label>
+                <input id="password" class="fld-input sign-input" type="password" value="" required>
+            </div>
+            <div class="sign-item rem-top">
+                <label></label>
+                <input id="remember" class="remember" type="checkbox" value="" tabindex="0">
+                <label for="remember" class="lrem">Запомнить меня</label>
+            </div>
+            <div class="sign-item">
+                <button class="btn-gren btn-login" onclick="Login();">Вход</button>
+                <a class="forget" href="/forget-password">Забыли пароль?</a>
+            </div>
+            <div class="sign-item">
+                <a class="flogin" href="/signup">Нужен аккаунт? Зарегистрируйтесь!</a>
+            </div>
+        </div>
+    </div>
+</div>
+{{ template "footer" .}}
+{{ end }}

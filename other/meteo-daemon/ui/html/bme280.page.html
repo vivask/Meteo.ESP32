@@ -1,0 +1,43 @@
+{{ define "bme280" }}
+{{ template "header" }}
+{{ template "menu" }}
+<script async src="static/js/menu.js"></script>
+<script async src="static/js/bme280.js"></script>
+<script src="static/assets/Chart.js-2.9.3/Chart.min.js"></script>
+</head>
+<div>
+    <h2>BME280</h2>
+    <table class="table-canvas"><tr><td>
+        <div id="bme280-cancas">
+            <canvas id="bme280-chart" style="width:100%;max-width:1000px;"></canvas>
+        </div>
+    </td></tr></table>
+    <div  class="buttons">
+        <select class="cb-chart" id="show-bme280-chart" onchange="getData(currentDateTime)">
+            <option selected value="pressure">Давление</option>
+            <option value="temperature">Температура</option>
+            <option value="humidity">Влажность</option>
+        </select>  
+        <select class="cb-chart" id="bme280-gradation" onchange="getData(currentDateTime)">
+            <option value="bmp280-max">Максимум</option>
+            <option selected value="bmp280-avg">Среднее</option>
+            <option value="bmp280-min">Минимум</option>
+        </select>  
+        <select class="cb-chart" id="period-bme280-chart" onchange="getData(currentDateTime)">
+            <option selected value="day">Сутки</option>
+            <option value="week">Неделя</option>
+            <option value="month">Месяц</option>
+            <option value="year">Год</option>
+        </select>  
+        <input class="btn chart-btn" id="bme280-chart-ptev" type="button" onclick="onBme280ChartPrev()" value="<<"/>    
+        <input class="btn chart-btn" id="bme280-chart-next" type="button" onclick="onBme280ChartNext()" value=">>"/>    
+    </div>
+</div>
+<div class="modalwin" id="popup-wait">
+    <div class="modalwin-content">
+        <div class="spinner"><div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+    </div>
+</div>           
+{{ template "footer" }}
+{{ end }}

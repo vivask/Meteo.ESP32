@@ -1,0 +1,30 @@
+{{ define "loging" }}
+{{ template "header" .}}
+{{ template "menu" .}}
+<script async src="static/js/menu.js"></script>
+<script async src="static/js/loging.js"></script>
+</head>
+<div id="ploging">
+    <h2>Журнал сообщений</h2>
+    <div  class="buttons">
+        <select class="cb-chart" id="cb-loging" onchange="doCBLogingChange()">
+            <option selected value="day">Сутки</option>
+            <option value="week">Неделя</option>
+            <option value="month">Месяц</option>
+            <option value="year">Год</option>
+        </select>  
+        <input class="btn chart-btn" id="loging-ptev" type="button" onclick="onLogingPrev()" value="<<"/>    
+        <input class="btn chart-btn" id="loging-next" type="button" onclick="onLogingNext()" value=">>"/>    
+        <input class="btn chart-btn" id="loging-refresh" type="button" onclick="onLogingRefresh()" value="Обновить"/>    
+        <input class="btn chart-btn" id="loging-clear" type="button" onclick="onLogingClear()" value="Очистить"/>    
+    </div>
+    <table class="loging-table" id="tbl-loging">
+        <tr>
+            <th>Дата</th>
+            <th>Время</th>
+            <th>Сообщение</th>
+        </tr>
+    </table>
+</div>
+{{ template "footer" .}}
+{{ end }}

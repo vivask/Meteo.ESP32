@@ -1,0 +1,38 @@
+{{ define "cron" }}
+{{ template "header" .}}
+{{ template "menu" .}}
+<link rel="stylesheet" href="static/css/settings.css">
+<script async src="static/js/menu.js"></script>
+</head>
+<div class="menu-flex">
+    <div class="box-menu">
+        <div class="vertical-menu">
+            <div class="vertical-menu-header">Планировщик</div>
+            <a onclick="changeLocation('/verify/schedule');">Расписание</a>
+            <a onclick="changeLocation('/verify/tasks');">Задачи</a>
+            <a onclick="changeLocation('/verify/cron');">Cron</a>
+        </div> 
+    </div>
+    <div class="content-flex">
+        <h6>Job cron list
+            <div class="right-add-btn">
+                <div class="btn-add-key" onclick="changeLocation('/verify/cron');">Обновить</div>    
+            </div>
+        </h6>
+        {{ range . }}
+        <div class="item">
+            <div class="left column">
+                <i class="mega-octicon octicon-clock"></i>
+            </div>
+            <div class="left column">
+                <strong>{{ .Note }}</strong>
+                <div class="meta-jobs">
+                    <i>Next run at: {{ DateFmtSimple .ScheduledTime }}</i>
+                </div>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+</div>
+{{ template "footer" .}}
+{{ end }}

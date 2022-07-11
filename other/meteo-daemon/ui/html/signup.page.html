@@ -1,0 +1,35 @@
+{{ define "signup" }}
+{{ template "header" .}}
+{{ template "menu" .}}
+<link rel="stylesheet" href="static/css/settings.css">
+<link rel="stylesheet" href="static/css/signup.css">
+<script async src="static/js/menu.js"></script>
+<script async src="static/js/signup.js"></script>
+</head>
+<div>
+    <div class="menu-flex">
+        <div class="content-flex">
+            <h6 class="sign-h">Регистрация</h6>
+            <div class="sign-item">
+                <label for="username" class="sign-label">Имя пользователя</label>
+                <input id="username" class="fld-input sign-input" value="" required>
+            </div>
+            <div class="sign-item">
+                <label for="password" class="sign-label">Пароль</label>
+                <input id="password" class="fld-input sign-input" type="password" value="" required>
+            </div>
+            <div class="sign-item">
+                <label for="retype" class="sign-label">Введите повторно</label>
+                <input id="retype" class="fld-input sign-input" type="password" value="" required>
+            </div>
+            <div class="sign-item">
+                <button class="btn-gren btn-new" onclick="Signup();">Создать новый аккаунт</button>
+            </div>
+            <div class="sign-item">
+                <a class="hlogin" href="/login">Уже есть аккаунт? Авторизуйтесь!</a>
+            </div>
+        </div>
+    </div>
+</div>
+{{ template "footer" .}}
+{{ end }}

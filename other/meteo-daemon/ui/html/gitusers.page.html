@@ -1,0 +1,75 @@
+{{ define "gitusers" }}
+{{ template "header" .}}
+{{ template "menu" .}}
+<link rel="stylesheet" href="static/css/settings.css">
+<script async src="static/js/menu.js"></script>
+<script async src="static/js/gitusers.js"></script>
+</head>
+<div class="menu-flex">
+    <div class="box-menu">
+        <div class="vertical-menu">
+            <div class="vertical-menu-header">Безопасность</div>
+            <a onclick="changeLocation('/verify/ssh');">SSH Ключи</a>
+            <a onclick="changeLocation('/verify/knowhosts');">SSH Хосты</a>
+            <a onclick="changeLocation('/verify/gitkeys');">Git Ключи</a>
+            <a onclick="changeLocation('/verify/gitusers');">Git Пользователи</a>
+        </div> 
+    </div>
+    <div class="content-flex">
+        <h6>Управление пользователями Git
+            <div class="right-add-btn">
+                <div class="btn-add-key" onclick="ShowForm('add-user');">Добавить пользователя</div>    
+            </div>
+        </h6>
+        {{range .}}
+        <div class="item">
+            <div class="left">
+                <i class="fa fa-circle{{if .HasRecentActivity}} ssh-key-active{{else}}-o ssh-key-inactive{{end}}"></i>
+            </div>
+            <div class="left column">
+                <i class="mega-octicon octicon-person"></i>
+            </div>
+            <div class="left column">
+                <strong>{{.Service}}</strong>
+                <div class="meta">Пользователь: {{.Username}}</div>
+                <div class="meta">
+                    <i>
+                        Добавлено
+                        <span>{{ DateFmtLong .CreatedAt }}</span>
+                        {{ if NotZeroTime .UpdatedAt }}
+                        —
+                        <i class="octicon octicon-info"></i>
+                        Последний раз использовался<br>
+                        <span>{{ DateFmtLong .UpdatedAt }}</span>
+                        {{ end }}
+                    </i>
+                </div>
+            </div>
+            <div class="item-right">
+                <button class="btn-del" data-id="{{.ID}}" data-service="{{.Service}}" onclick="deleteUser(this.dataset.id, this.dataset.service);">Удалить</button>
+            </div>
+        </div>
+        {{end}}
+    </div>
+    <br>
+    <div class="box-content attached-segment" id="add-user">
+        <h6>Добавить пользователя Git</h6>
+            <div class="field">
+                <label for="service">Сервис</label>
+                <select class="fld-input" id="service">
+                    <option selected value="Mikrotiks" autofocus="">Бэкап роутеров mikrotik</option>
+                </select>  
+            </div>
+            <div class="field">
+                <label for="username">Пользователь</label>
+                <input id="username" class="fld-input" name="username" value="" required="">
+            </div>
+            <div class="field">
+                <label for="password">Пароль</label>
+                <input id="password" class="fa fa-eye fld-input" name="password" value="" required="" aria-hidden="true">
+            </div>
+            <button class="btn-gren" onclick="addUser();">Добавить пользователя</button>
+    </div>
+</div>
+{{ template "footer" .}}
+{{ end }}

@@ -1,0 +1,41 @@
+{{ define "menu" }}
+<script async src="static/js/logout.js"></script>
+<body>
+    <header>
+        <h1>Метео станция</h1>
+    </header>
+    <div class="navbar">
+        <a class="fa navbar-menu" href="/"><i class="octicon octicon-home"></i>Главная</a>
+        <div class="dropdown">
+            <button class="dropbtn">Периферия
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+                <a href="/bme280">BME280</a>
+                <a href="/mics6814">MICS-6814</a>
+                <a href="/radsens">RadSens</a>
+                <a href="/ze08ch2o">ZE08CH2O</a>
+                <a href="/ds18b20">DS18B20</a>
+                <a href="/valve">Клапан</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropbtn">Настройки
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+                <a onclick="authLocation('/verify/controller')">Контроллер</a>
+                <a onclick="authLocation('/verify/settings')">Уставки</a>
+                <a onclick="authLocation('/verify/loging')">Журнал</a>
+                <a onclick="authLocation('/verify/proxy')">Прокси</a>
+                <a onclick="authLocation('/verify/ssh')">Безопасность</a>
+                <a onclick="authLocation('/verify/schedule')">Планировщик</a>
+                <a onclick="authLocation('/verify/tables')">База данных</a>
+                <a onclick="authLocation('/verify/metrics')">Metrics</a>
+            </div>
+        </div>
+        <a id="login" class="fa navbar-menu" href="/login"><i class="octicon octicon-sign-in"></i>Вход</a>
+        <a id="logout" class="fa navbar-menu" onclick="Logout()"><i class="octicon octicon-sign-in"></i>Выход</a>
+        <a class="navbar-clock"  id="clock"></a>
+    </div> 
+{{ end }}

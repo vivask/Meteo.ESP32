@@ -1,0 +1,152 @@
+{{ define "schedule" }}
+{{ template "header" .}}
+{{ template "menu" .}}
+{{ $jobs := .Jobs }}
+<link rel="stylesheet" href="static/css/settings.css"> 
+<link rel="stylesheet" href="static/css/signup.css"> 
+<script async src="static/js/menu.js"></script>
+<script src="static/js/schedule.js"></script>
+</head>
+<div class="menu-flex">
+    <div class="box-menu">
+        <div class="vertical-menu">
+            <div class="vertical-menu-header">Планировщик</div>
+            <a onclick="changeLocation('/verify/schedule');">Расписание</a>
+            <a onclick="changeLocation('/verify/tasks');">Задачи</a>
+            <a onclick="changeLocation('/verify/cron');">Cron</a>
+        </div> 
+    </div>
+    <div class="content-flex">
+        <h6>Управление расписанием
+            <div class="right-add-btn">
+                <div class="btn-add-key" onclick="newJob();">Добавить задачу</div>    
+            </div>
+        </h6>
+        {{ range $job := $jobs }}
+        <div class="item">
+            <div class="left">
+                <i id="active-job-{{$job.ID}}" class="interacive fa fa-circle{{if $job.Active}} ssh-key-active{{else}}-o ssh-key-inactive{{end}}" data-id="{{$job.ID}}" data-active="{{$job.Active}}" onclick="onActivate(this.dataset.id, this.dataset.active)"></i>
+            </div>
+            <div class="left column">
+                <i class="mega-octicon octicon-clock"></i>
+            </div>
+            <div class="left column">
+                <strong>{{ $job.Note }}</strong>
+                <div class="meta-jobs">
+                    <i>
+                        {{ if or (eq $job.PeriodID "sec") (eq $job.PeriodID "min") (eq $job.PeriodID "week") }}
+                            {{ GetSecSuffix $job.PeriodID $job.Value }}{{ if gt $job.Value 1 }}{{ $job.Value }} {{ end }}{{ GetPeriod $job.PeriodID $job.Value }}
+                        {{ end }}
+                        {{ if or (eq $job.PeriodID "day") (eq $job.PeriodID "hour") (eq $job.PeriodID "month") }}
+                            {{ GetHourSuffix $job.PeriodID $job.Value }}{{ if gt $job.Value 1 }}{{ $job.Value }} {{ end }}{{ GetPeriod $job.PeriodID $job.Value }}
+                        {{ end }}
+                        {{ if eq $job.PeriodID "one" }}Выполнить единоразово {{ end }}
+                        {{ if eq $job.PeriodID "day_of_week" }}
+                            {{ if or (eq $job.DayID 1) (eq $job.DayID 2) (eq $job.DayID 4) }}
+                                Повторять  каждый {{if gt $job.Value 1}}{{ $job.Value }} {{ end }} {{ CaseDayStr $job.DayID }}
+                            {{ end }}
+                            {{ if or (eq $job.DayID 3) (eq $job.DayID 5) (eq $job.DayID 6) }}
+                                Повторять  каждую {{if gt $job.Value 1}}{{ $job.Value }} {{ end }} {{ CaseDayStr $job.DayID }}
+                            {{ end }}
+                            {{ if eq $job.DayID 7 }}
+                                Повторять  каждое {{if gt $job.Value 1}}{{ $job.Value }} {{ end }} {{ CaseDayStr $job.DayID }}
+                            {{ end }}
+                        {{end}}
+                    </i>
+                </div>
+                <div class="meta-jobs">
+                    {{ if or ($job.Time) ($job.Date) }}Начиная с {{ end }}
+                    {{ if $job.Time }}{{ $job.Time }}{{ end }}
+                    {{ if $job.Date }}{{ $job.Date }}{{ end }}
+                </div>
+            </div>
+            <div class="item-right">
+                <button class="btn-edit" data-id="{{$job.ID}}" onclick="runJob(this.dataset.id);">Выполнить</button>
+                <button class="btn-edit" data-id="{{$job.ID}}" onclick="editJob(this.dataset.id);">Изменить</button>
+                <button class="btn-del" data-id="{{$job.ID}}" data-note="{{$job.Note}}" onclick="delJob(this.dataset.id, this.dataset.note);">Удалить</button>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+    <br>
+    <div class="box-content attached-segment" id="add-task">
+        <h6 id="task-add-head">Добавить задачу
+            <div class="right-add-btn">
+                <input id="new-verbose" class="remember" type="checkbox" value="" tabindex="0">
+                <label for="new-verbose" class="right verbose">verbose</label>
+            </div>    
+        </h6>
+        <h6 id="task-edit-head">Изменить задачу
+            <div class="right-add-btn">
+                <input id="verbose" class="remember" type="checkbox" value="" tabindex="0">
+                <label for="verbose" class="right verbose">verbose</label>
+            </div>    
+        </h6>
+            <div class="field">
+                <label class="label-jobs" for="note">Описание задания</label>
+                <input id="note" class="fld-input" value="">
+            </div>
+            <div class="field">
+                <label class="label-jobs" for="task-ed">Задача</label>
+                <select class="fld-input" id="task" onchange="doChangeTask()">
+                    {{ range .Tasks }}
+                    <option value="{{.ID}}">{{.Name}}</option>
+                    {{ end }}
+                </select>
+            </div>
+            <div class="field">
+                <label class="label-jobs" for="executor">Исполнитель</label> 
+                <select class="fld-input" id="executor">
+                    {{ range .Executors }}
+                    <option value="{{.ID}}">{{.ID}}</option>
+                    {{ end }}
+                </select>
+            </div>
+            <div class="field" id="num-val">
+                <label id="lb0" class="label-jobs label-left" for="val-num">Повторять каждые</label>
+                <select class="fld-input" id="period-num" onchange="doChangeNumPeriod(this)">
+                    {{range .Periods}}
+                    <option value="{{.ID}}">{{.Name}}</option>
+                    {{ end }}
+                </select>
+                <input id="val-num" class="fld-input" value="" required="" onkeypress='validate(event)' onkeyup="validate_num()"> 
+            </div>
+            <div class="field" id="day-val">
+                <label id="lb1" class="label-jobs label-left" for="val-day" clas="label-left">Повторять каждую</label>
+                <select class="fld-input" id="period-day" onchange="doChangeDayPeriod(this)">
+                    {{range .Periods}}
+                    <option value="{{.ID}}">{{.Name}}</option>
+                    {{ end }}
+                </select>
+                <select class="fld-input" id="days" onchange="doDayChange()">
+                    {{range .Days}}
+                    <option value="{{.ID}}">{{.Name}}</option>
+                    {{ end }}
+                </select>
+                <input id="val-day" class="fld-input" value="" required="" onkeypress='validate(event)'>
+            </div>
+            <div class="field" id="time-val">
+                <label class="label-jobs" for="time">Время старта</label>
+                <input id="time" class="fld-input" type="time" step="2"  value="">
+            </div>
+            <div class="field" id="date-val">
+                <label class="label-jobs" for="date">Дата старта</label>
+                <input id="date" class="fld-input" type="date" value="">
+            </div>
+            <div class="field" id="new-params">
+                <label class="label-jobs" for="add-param">Параметры</label>
+                <button class="btn-edit" id="add-param" onclick="showParams(this);">>></button>
+            </div>
+            <br>
+            <button class="btn-gren" id="task-add" onclick="addOk();">Добавить задачу</button>
+            <button class="btn-gren" id="task-edit" onclick="editOk();">Принять</button>
+    </div>
+</div>
+<div class="modalwin" id="popup-wait">
+    <div class="modalwin-content">
+        <div class="spinner"><div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+    </div>
+</div>           
+{{ template "footer" .}}
+{{ end }}

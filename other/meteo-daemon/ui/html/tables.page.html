@@ -1,0 +1,62 @@
+{{ define "tables" }}
+{{ template "header" .}}
+{{ template "menu" .}}
+<link rel="stylesheet" href="static/css/settings.css">
+<script async src="static/js/menu.js"></script>
+<script async src="static/js/tables.js"></script>
+</head>
+<div class="ssh-box">
+    <div class="box-menu">
+        <div class="vertical-menu">
+            <div class="vertical-menu-header">База данных</div>
+            <a onclick="changeLocation('/verify/tables');">Таблицы</a>
+            <a onclick="changeLocation('/verify/sync');">Синхронизация</a>
+        </div> 
+    </div>
+    <div class="box-content" id="tables">
+        <h6>Управление таблицами синхронизации
+            <div class="right-add-btn">
+                <div class="btn-add-key" onclick="newTable();">Добавить таблицу</div>    
+            </div>
+        </h6>
+        {{ range . }}
+        <div class="proxy-item">
+            <div class="left table-fld0">
+                <i class="mega-octicon octicon-database"></i>
+            </div>
+            <div class="left table-fld1">
+                <i>{{ .ID }}</i>
+            </div>
+            <div class="left table-fld1">
+                <i>{{ .Note }}</i>
+            </div>
+            <div class="item-right">
+                <button class="btn-edit" data-id="{{.ID}}" onclick="editTable(this.dataset.id);">Изменить</button>
+                <button class="btn-del" data-id="{{.ID}}" onclick="delTable(this.dataset.id);">Удалить</button>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+    <br>
+    <div class="box-content attached-segment" id="add-table">
+        <h6 id="table-add-head">Добавить таблицу</h6>
+        <h6 id="table-edit-head">Изменить таблицу</h6>
+        <div class="field">
+            <label class="label-jobs" for="table-name">Наименование</label>
+            <input id="table-name" class="fld-input" value="" required=""> 
+        </div>
+         <div class="field">
+            <label class="label-jobs" for="table-note">Описание</label>
+            <input id="table-note" class="fld-input" value="" required="">
+        </div>
+        <div class="field" id="new-params">
+            <label class="label-jobs" for="add-param">Cинхронизации</label>
+            <button class="btn-edit" id="add-param" onclick="showParams(this);">>></button>
+        </div>
+        <br>
+        <button class="btn-gren" id="table-add" onclick="addOk();">Добавить таблицу</button>
+        <button class="btn-gren" id="table-edit" onclick="editOk();">Принять</button>
+    </div>
+</div>
+{{ template "footer" .}}
+{{ end }}

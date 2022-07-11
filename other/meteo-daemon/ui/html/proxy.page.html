@@ -1,0 +1,74 @@
+{{ define "proxy" }}
+{{ template "header" .}}
+{{ template "menu" .}}
+{{ $master := .Master }}
+{{ $slave := .Slave }}
+<link rel="stylesheet" href="static/css/settings.css">
+<script async src="static/js/menu.js"></script>
+<script async src="static/js/proxy.js"></script>
+</head>
+<div class="menu-flex">
+    <div class="box-menu">
+        <div class="proxy-menu">
+            <div class="proxy-menu-header">Прокси</div> 
+            <a onclick="changeLocation('/verify/proxy');">DNS Серверы</a>
+            <a onclick="changeLocation('/verify/homezone');">Локальная зона</a>
+            <a onclick="changeLocation('/verify/vpnauto');">Автоматический список</a>
+            <a onclick="changeLocation('/verify/vpnmanual');">Ручной список</a>
+            <a onclick="changeLocation('/verify/vpnignore');">Игнорировать</a>
+        </div> 
+    </div>
+    <div class="content-proxy">
+        <h6>DNS Серверы</h6>
+        <div class="item">
+            <div class="left column">
+                <i class="mega-octicon octicon-server"></i>
+            </div>  
+            <div class="left column">
+                <strong>Основной DNS сервер</strong>
+                <div class="meta-jobs interacive" onclick="onActivateMaster()">
+                    <i class="fa fa-circle{{if $master.Active}} ssh-key-active{{else}}-o ssh-key-inactive{{end}}"></i>
+                    <i>{{if $master.Active}}Активен{{else}}Приостановлен{{end}}</i>
+                </div>   
+                <div class="meta-jobs interacive" onclick="onBlkListMaster()">
+                    <i class="fa fa-circle{{if $master.BlkListOn}} ssh-key-active{{else}}-o ssh-key-inactive{{end}}"></i>
+                    <i>{{if $master.BlkListOn}}Блокировка рекламы включена{{else}}Блокировка рекламы выключена{{end}}</i>
+                </div>   
+                <div class="meta-jobs interacive" onclick="onCacheMaster()">
+                    <i class="fa fa-circle{{if $master.CacheOn}} ssh-key-active{{else}}-o ssh-key-inactive{{end}}"></i>
+                    <i>{{if $master.CacheOn}}Кэш активен{{else}}Кэш выключен{{end}}</i>
+                </div>   
+                <div class="meta-jobs interacive" onclick="onUnlockerMaster()">
+                    <i class="fa fa-circle{{if $master.UnlockerOn}} ssh-key-active{{else}}-o ssh-key-inactive{{end}}"></i>
+                    <i>{{if $master.UnlockerOn}}Деблокировка сайтов включена{{else}}Деблокировка сайтов выключена{{end}}</i>
+                </div>   
+            </div> 
+        </div>
+        <div class="bottom-item">
+            <div class="left column">
+                <i class="mega-octicon octicon-server"></i>
+            </div>   
+            <div class="left column">
+                <strong>Резервный DNS сервер</strong>
+                <div class="meta-jobs interacive" onclick="onActivateSlave()">
+                    <i class="fa fa-circle{{if $slave.Active}} ssh-key-active{{else}}-o ssh-key-inactive{{end}}"></i>
+                    <i>{{if $slave.Active}}Активен{{else}}Приостановлен{{end}}</i>
+                </div>
+                <div class="meta-jobs interacive" onclick="onBlkListSlave()">
+                    <i class="fa fa-circle{{if $slave.BlkListOn}} ssh-key-active{{else}}-o ssh-key-inactive{{end}}"></i>
+                    <i>{{if $slave.BlkListOn}}Блокировка рекламы включена{{else}}Блокировка рекламы выключена{{end}}</i>
+                </div>   
+                <div class="meta-jobs interacive" onclick="onCacheSlave()">
+                    <i class="fa fa-circle{{if $slave.CacheOn}} ssh-key-active{{else}}-o ssh-key-inactive{{end}}"></i>
+                    <i>{{if $slave.CacheOn}}Кэш активен{{else}}Кэш выключен{{end}}</i>
+                </div>   
+                <div class="meta-jobs interacive" onclick="onUnlockerSlave()">
+                    <i class="fa fa-circle{{if $slave.UnlockerOn}} ssh-key-active{{else}}-o ssh-key-inactive{{end}}"></i>
+                    <i>{{if $slave.UnlockerOn}}Деблокировка сайтов включена{{else}}Деблокировка сайтов выключена{{end}}</i>
+                </div>   
+            </div> 
+        </div>
+    </div>
+</div>
+{{ template "footer" .}}
+{{ end }}
