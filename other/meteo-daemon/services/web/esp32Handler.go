@@ -102,7 +102,7 @@ func (web *Web) esp32Handler(w http.ResponseWriter, r *http.Request) {
 			case "ZE08CH2O":
 				err = web.repo.AddZe08ch2o(ctx, msg["CH2O"])
 				if err != nil {
-					web.logger.Errorf("add radsens error: %v", err)
+					web.logger.Errorf("add ze08ch2o error: %v", err)
 				}
 			case "GET_SETTINGS":
 				if res, err := web.repo.GetEsp32Settings(ctx, msg["DATE_TIME"]); err != nil {

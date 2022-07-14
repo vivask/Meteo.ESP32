@@ -238,7 +238,7 @@ func (r *MysqlRepository) AddDs18b20(ctx context.Context, tempr interface{}) err
 	if err != nil {
 		return fmt.Errorf("insert ds18b20: %v, error: %w", ds18b20, err)
 	}
-	r.logger.Debugf("create ds18b20: %v", ds18b20)
+	r.logger.Infof("create ds18b20: %v", ds18b20)
 	settings, err := r.GetSettings(ctx)
 	if err != nil {
 		return fmt.Errorf("error read settings: %w", err)
@@ -289,7 +289,7 @@ func (r *MysqlRepository) AddBmx280(ctx context.Context, press, tempr, hum inter
 	if err != nil {
 		return fmt.Errorf("insert bmx280: %v, error: %w", bmx280, err)
 	}
-	r.logger.Debugf("cretae bmx280: %v", bmx280)
+	r.logger.Infof("cretae bmx280: %v", bmx280)
 	settings, err := r.GetSettings(ctx)
 	if err != nil {
 		return fmt.Errorf("error read settings: %w", err)
@@ -338,9 +338,9 @@ func (r *MysqlRepository) AddRadsens(ctx context.Context, dyn, stat, pl interfac
 	radsens := Radsens{ID: hs.HashNow32(), Dynamic: dynamic, Static: static, Pulse: pulse}
 	err = r.db.Create(&radsens).Error
 	if err != nil {
-		return fmt.Errorf("insert radsens:%v, error: %w", radsens, err)
+		return fmt.Errorf("insert radsens: %v, error: %w", radsens, err)
 	}
-	r.logger.Debugf("create radsens: %v", radsens)
+	r.logger.Infof("create radsens: %v", radsens)
 	settings, err := r.GetSettings(ctx)
 	if err != nil {
 		return fmt.Errorf("error read settings: %w", err)
@@ -382,9 +382,9 @@ func (r *MysqlRepository) AddZe08ch2o(ctx context.Context, ch2o interface{}) err
 	ze08ch2o := Ze08ch2o{ID: hs.HashNow32(), Ch2o: value}
 	err = r.db.Create(&ze08ch2o).Error
 	if err != nil {
-		return fmt.Errorf("insert ze08ch2o:%v, error: %w", ze08ch2o, err)
+		return fmt.Errorf("insert ze08ch2o: %v, error: %w", ze08ch2o, err)
 	}
-	r.logger.Debugf("create ze08ch2o: %v", ze08ch2o)
+	r.logger.Infof("create ze08ch2o: %v", ze08ch2o)
 	settings, err := r.GetSettings(ctx)
 	if err != nil {
 		return fmt.Errorf("error read settings: %w", err)
