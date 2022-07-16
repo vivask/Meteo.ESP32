@@ -2,9 +2,9 @@
 Title = "meteo-daemon"
 Master = true
 Protocol = "https"
-LocalAddr = "192.168.1.3"
+LocalAddr = "192.168.x.3"
 LocalPort = 443
-RemoteAddr = "192.168.1.5"
+RemoteAddr = "192.168.x.5"
 RemotePort = 443
 CAFile = "/var/lib/meteo-daemon/.config/certs/MeteoCA.crt"
 CertFile = "/var/lib/meteo-daemon/.config/certs/client.crt"
@@ -18,10 +18,10 @@ LogLevel = "info"
 
 [Cluster]
 Title = "Cluster"
-BindAddr = "192.168.1.3"
+BindAddr = "192.168.x.3"
 BindPort = 10000
 Interface = "eth0"
-VirtualIP = "192.168.1.9"
+VirtualIP = "192.168.x.9"
 LogFile = "cluster.log"
 LogLevel = "info"
 
@@ -43,8 +43,8 @@ Title = "Web"
 Active = true
 HttpAddr = "0.0.0.0"
 HttpPort = 443
-CertFile = "/var/lib/meteo-daemon/.config/certs/192.168.1.9.crt"
-KeyFile = "/var/lib/meteo-daemon/.config/certs/192.168.1.9.key"
+CertFile = "/var/lib/meteo-daemon/.config/certs/192.168.x.9.crt"
+KeyFile = "/var/lib/meteo-daemon/.config/certs/192.168.x.9.key"
 TLSMinVersion = "TLS12"
 UiPath = "./ui/html/"
 ControlMAC = "no"
@@ -65,19 +65,19 @@ LogLevel = "info"
 [Mikrotik]
 Title = "Mikrotik"
 Active = true
-Hosts = ["192.168.1.1", "192.168.1.6", "192.168.1.7", "192.168.1.16"]
+Hosts = ["192.168.x.1", "192.168.x.2", "192.168.x.4", "192.168.x.5"]
 Ports = ["22", "22", "22", "22"]
 Users = ["", "", "", ""]
 GitRepo = ""
 #----Byfly----
-PPPHost = "192.168.1.1"
+PPPHost = "192.168.x.1"
 PPPPort = "22"
-PPPUser = "manager"
+PPPUser = ""
 PPPIface = "ByFly"
 PPPScript = "ppp-restart"
 #----Byfly----
 #----Unlock----
-VPNHost = "192.168.1.1"
+VPNHost = "192.168.x.1"
 VPNPort = "22"
 VPNUser = ""
 VPNList = ""
