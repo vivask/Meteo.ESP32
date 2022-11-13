@@ -22,12 +22,12 @@ The following pin connection is used in this example.
 
 
 ### Configure the project
-
+```sh
 ~cd /tmp
 ~git clone https://github.com/vivask/Meteo.ESP32.git
 ~cd Meteo.ESP32
 ~idf.py menuconfig
-
+```
 More information about project configuration here https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/kconfig.html
 
 ### Build and Flash
