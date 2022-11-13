@@ -38,3 +38,7 @@ Run `idf.py -p PORT flash monitor` to build and flash the project..
 
 See the [Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/latest/get-started/index.html) for full steps to configure and use ESP-IDF to build projects.
 
+### Configure meteo station
+After successful firmware and restart of the controller, a Wi-Fi access point with the name es32 will be available. You need to connect to it, then use any browser to go to the address http://10.10.0.1
+
+The specified parameters are valid for the controller's default configuration.
