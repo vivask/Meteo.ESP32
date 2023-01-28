@@ -41,14 +41,14 @@ var refreshAPInterval = null;
 var checkStatusInterval = null;
 
 function stopCheckStatusInterval() {
-  if (checkStatusInterval != null) {
+  if (checkStatusInterval !== null) {
       clearInterval(checkStatusInterval);
       checkStatusInterval = null;
   }
 }
 
 function stopRefreshAPInterval() {
-  if (refreshAPInterval != null) {
+  if (refreshAPInterval !== null) {
       clearInterval(refreshAPInterval);
       refreshAPInterval = null;
   }
@@ -77,7 +77,7 @@ docReady(async function () {
       (e) => {
       const type = pwd.getAttribute('type') === 'password' ? 'text' : 'password';
       pwd.setAttribute('type', type);
-      if(type == 'text'){
+      if(type === 'text'){
           gel("lpwd").setAttribute('class', 'toggle-password--off');
       } else{
           gel("lpwd").setAttribute('class', 'toggle-password--on');
@@ -91,7 +91,7 @@ docReady(async function () {
       (e) => {
       const type = ppas.getAttribute('type') === 'password' ? 'text' : 'password';
       ppas.setAttribute('type', type);
-      if(type == 'text'){
+      if(type === 'text'){
           gel("lppas").setAttribute('class', 'toggle-password--off');
       } else{
           gel("lppas").setAttribute('class', 'toggle-password--on');
@@ -105,7 +105,7 @@ docReady(async function () {
       (e) => {
       const type = tpas.getAttribute('type') === 'password' ? 'text' : 'password';
       tpas.setAttribute('type', type);
-      if(type == 'text'){
+      if(type === 'text'){
           gel("ltpas").setAttribute('class', 'toggle-password--off');
       } else{
           gel("ltpas").setAttribute('class', 'toggle-password--on');
@@ -289,7 +289,7 @@ function refreshAPHTML(data) {
     data.forEach(function (e, idx, array) {
       let ap_class = idx === array.length - 1 ? "" : " brdb";
       let rssicon = rssiToIcon(e.rssi);
-      let auth = e.auth == 0 ? "" : "pw";
+      let auth = e.auth === 0 ? "" : "pw";
       h += `<div class="ape${ap_class}"><div class="${rssicon}"><div class="${auth}">${e.ssid}</div></div></div>\n`;
     });
 
@@ -300,7 +300,7 @@ async function checkStatus(url = "status.json") {
     try {
       var response = await fetch(url);
       var data = await response.json();
-      if (data && data.hasOwnProperty("ssid") && data["ssid"] != "") {
+      if (data && data.hasOwnProperty("ssid") && data["ssid"] !== "") {
             if (data["ssid"] === selectedSSID) {
               // Attempting connection
               switch (data["urc"]) {
@@ -344,7 +344,7 @@ async function checkStatus(url = "status.json") {
             } else if (data.hasOwnProperty("urc") && data["urc"] === 0) {
               console.info("Connection established");
               //ESP32 is already connected to a wifi without having the user do anything
-              if (gel("wifi-status").style.display == "" || gel("wifi-status").style.display == "none" ) {
+              if (gel("wifi-status").style.display === "" || gel("wifi-status").style.display === "none" ) {
                     document.querySelector("#connected-to div div div span").textContent = data["ssid"];
                     document.querySelector("#connect-details h1").textContent = data["ssid"];
                     gel("ip").textContent = data["ip"];
@@ -362,7 +362,7 @@ async function checkStatus(url = "status.json") {
             }
       } else if (data.hasOwnProperty("urc") && data["urc"] === 2) {
             console.log("Manual disconnect requested...");
-            if (gel("wifi-status").style.display == "block") {
+            if (gel("wifi-status").style.display === "block") {
               gel("wifi-status").style.display = "none";
             }
       }
@@ -385,7 +385,7 @@ async function performConnect(conntype) {
     var tls_crt_file_size, tls_key_file_size;
     var address, port, httpd_ca_size, httpd_client_crt_size, httpd_client_key_size, httpd_user, httpd_passw;
     var ipv4_addr, ipv4_mask, ipv4_gate, ipv4_dns, ipv4_ntp, ipv4_timezone;
-    if (conntype == MANUAL) {
+    if (conntype === MANUAL) {
       //Grab the manual SSID and PWD
       selectedSSID = gel("manual_ssid").value;
     } 
@@ -394,24 +394,26 @@ async function performConnect(conntype) {
     authentication = gel("cb2").value;
     identity = gel("ide").value;
     cert_files = new FormData();
-    if(gel("check2").checked == false){
+    if(gel("check2").checked === false){
           ca_file_size = 0;
     }else{
           ca_file_size = gel("cas").files[0].size;
           cert_files.append('ca_file', gel("cas").files[0]);
     }
-    peap_user = gel("pusr").value;
+    //peap_user = gel("pusr").value;
+    peap_user = identity;
     peap_passwd = gel("ppas").value;
     ttls_auth = gel("cb3").value;
+    //ttls_user = gel("tusr").value;
     ttls_user = gel("tusr").value;
-    ttls_passwd = gel("tpas").value;
-    if(gel("crt").value.length == 0){
+    ttls_passwd = identity;
+    if(gel("crt").value.length === 0){
           tls_crt_file_size = 0;
     }else{
           tls_crt_file_size = gel("crt").files[0].size;
           cert_files.append('crt_file', gel("crt").files[0]);
     }
-    if(gel("key").value.length == 0){
+    if(gel("key").value.length === 0){
           tls_key_file_size = 0;
           tls_key_paswd = "";
     }else{
@@ -420,19 +422,19 @@ async function performConnect(conntype) {
     }
     address = gel("addr").value;
     port = gel("port").value;
-    if(gel("cah").value.length == 0){
+    if(gel("cah").value.length === 0){
           httpd_ca_size = 0;
     }else{
           httpd_ca_size = gel("cah").files[0].size;
           cert_files.append('httpd_ca', gel("cah").files[0]);
     }
-    if(gel("client-crt").value.length == 0){
+    if(gel("client-crt").value.length === 0){
           httpd_client_crt_size = 0;
     }else{
       httpd_client_crt_size = gel("client-crt").files[0].size;
           cert_files.append('httpd_crt', gel("client-crt").files[0]);
     }
-    if(gel("client-key").value.length == 0){
+    if(gel("client-key").value.length === 0){
           httpd_client_key_size = 0;
     }else{
       httpd_client_key_size = gel("client-key").files[0].size;
@@ -536,7 +538,7 @@ function doCB2Change(value) {
           gel("ttls_sec").style.display = "block";
           gel("tls_sec").style.display = "none";
           gel("peap_sec").style.display = "none";
-          gel("tusr").value = "";
+          //gel("tusr").value = "";
           gel("tpas").value = "";
           break;
         case 'PEAP':
@@ -544,7 +546,7 @@ function doCB2Change(value) {
           gel("tls_sec").style.display = "none";
           gel("ttls_sec").style.display = "none";
           //gel("ide").value = "";
-          gel("pusr").value = "";
+          //gel("pusr").value = "";
           gel("ppas").value = "";
           //gel("join").disabled = false;
           break;
@@ -593,50 +595,50 @@ function doCheck2(checked) {
 
 function checkWiFiFormFill(manual = false) {
   disableJoinBtn(false);
-  if(manual && gel("manual_ssid").value.length == 0){
+  if(manual && gel("manual_ssid").value.length === 0){
     disableJoinBtn(true); 
-  }else if(personal_div.style.display == "block") {
+  }else if(personal_div.style.display === "block") {
     checkPasswordLength("pwd");
   }else{      
     var ident = gel("ide").value.length;
-    if(gel("peap_sec").style.display  == "block"){
-      var user = gel("pusr").value.length;
+    if(gel("peap_sec").style.display  === "block"){
+      //var user = gel("pusr").value.length;
       var pass = gel("ppas").value.length;
-      if (user == 0 || pass == 0 || ident == 0) {
+      if (pass === 0 || ident === 0) {
           disableJoinBtn(true); 
       } else {
           var ca = gel("check2").checked;
-          if(ca == true){
+          if(ca === true){
                 var ca_file = gel("cas").files.length;
-                if(ca_file == 0) {
+                if(ca_file === 0) {
                     disableJoinBtn(true);
                 }
           }
       }  
-    }else if(gel("ttls_sec").style.display == "block"){
-      var user = gel("tusr").value.length;
+    }else if(gel("ttls_sec").style.display === "block"){
+      //var user = gel("tusr").value.length;
       var pass = gel("tpas").value.length;
-      if (user == 0 || pass == 0 || ident == 0) {
+      if (pass === 0 || ident === 0) {
           disableJoinBtn(true); 
       } else {
           var ca = gel("check2").checked;
-          if(ca == true){
+          if(ca === true){
                 var ca_file = gel("cas").files.length;
-                if(ca_file == 0) {
+                if(ca_file === 0) {
                     disableJoinBtn(true);
                 }
           }
       }  
-    }else if(gel("tls_sec").style.display == "block"){
+    }else if(gel("tls_sec").style.display === "block"){
       var crt = gel("crt").value.length;
       var key = gel("key").value.length;
-      if (crt == 0 || key == 0 || ident == 0){
+      if (crt === 0 || key === 0 || ident === 0){
           disableJoinBtn(true); 
       } else {
           var ca = gel("check2").checked;
-          if(ca == true){
+          if(ca === true){
                 var ca_file = gel("cas").files.length;
-                if(ca_file == 0) {
+                if(ca_file === 0) {
                     disableJoinBtn(true);
                 }
           }
@@ -706,9 +708,9 @@ function onPrevClick(){
       gel("cancel").value  = "Cancel";
       var cb0 = gel("cb0");
       var cb1 = gel("cb1");
-      if(connType == MANUAL){
+      if(connType === MANUAL){
         connect_manual_div.style.display = "block";
-        if(cb0.options[cb0.selectedIndex].value == "Personal"){
+        if(cb0.options[cb0.selectedIndex].value === "Personal"){
           personalShow();  
         }else{
           enterpriseShow();
@@ -716,7 +718,7 @@ function onPrevClick(){
         checkWiFiFormFill(true);
       }else{
         connect_div.style.display = "block";
-        if(cb1.options[cb1.selectedIndex].value == "Personal"){
+        if(cb1.options[cb1.selectedIndex].value === "Personal"){
           personalShow();  
         }else{
           enterpriseShow();
@@ -750,7 +752,7 @@ function performCancel() {
   gel("manual_ssid").value = selectedSSID;
   gel("pwd").value = "";
   enterpriseHide();
-  if(connType == MANUAL){
+  if(connType === MANUAL){
     setCB0Value('Personal');
   }else{
     setCB1Value('Personal');
@@ -759,8 +761,8 @@ function performCancel() {
 }
 
 function clearHTTPDForm(){
-    gel("addr").value = "192.168.1.3";
-    gel("port").value = "443";
+    gel("addr").value = "192.168.1.9";
+    gel("port").value = "17000";
     gel("cah").value = "";
     gel("cah").disabled = false;
     gel("client-crt").value = "";
@@ -789,17 +791,17 @@ function checkHttpFormFill(){
     disableJoinBtn(false);
     /*var _addr = gel("addr").value.length;
     var _port = gel("port").value.length;
-    if(_addr == 0 || _port == 0 || !validIP_OR_NS(gel("addr"))){
+    if(_addr === 0 || _port === 0 || !validIP_OR_NS(gel("addr"))){
       disableJoinBtn(true);   
     }else{
-      if(gel("cah").value.length == 0){
+      if(gel("cah").value.length === 0){
             disableJoinBtn(true);
       }
       var login = gel("check4").checked;
-      if(login == true){
+      if(login === true){
           var user = gel("husr").value.length;
           var pass = gel("hpas").value.length;
-          if(user == 0 || pass == 0){
+          if(user === 0 || pass === 0){
                 disableJoinBtn(true);
           }
       }
@@ -883,11 +885,11 @@ function checkIPv4FormFill(){
 }
 
 function validIPv4_OR_Empty(data){
-  return validIPv4Address(data) || data.value.length == 0;
+  return validIPv4Address(data) || data.value.length === 0;
 }
 
 function validIPv4_OR_NS_OR_Empty(data){
-  return validDNSName(data) || validIPv4Address(data) || data.value.length == 0;
+  return validDNSName(data) || validIPv4Address(data) || data.value.length === 0;
 }
 
 function validIP_OR_NS(data){

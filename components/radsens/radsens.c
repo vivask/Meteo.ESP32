@@ -33,7 +33,7 @@ static const char *TAG = "radsens";
 
 static i2c_dev_t i2c_dev;
 static radsens_data_t *radsens_data = NULL;
-static bool initialized = false;
+//static bool initialized = false;
 static uint8_t current_sensitivity = RADSENS_SENSITIVITY_NORMAL;
 
 static float prvious_static = 0.0;

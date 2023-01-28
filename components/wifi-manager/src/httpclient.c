@@ -203,12 +203,12 @@ static void task_firmware_start(){
     xTaskCreatePinnedToCore(_do_firmware_upgrade, "_do_firmware_upgrade", configMINIMAL_STACK_SIZE*8, NULL, 10, &xUpgradeFirmware, 0);
 }
 
-static void task_firmware_stop(){
+/*static void task_firmware_stop(){
     if(xUpgradeFirmware){
         vTaskDelete( xUpgradeFirmware );
         xUpgradeFirmware = NULL;
     }    
-}
+}*/
 
 
 void flash_read_start(){

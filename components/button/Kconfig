@@ -1,0 +1,17 @@
+menu "Button"
+
+  config PUSH_BUTTON_TIMER_MS
+      int "Button press counting time in ms"
+      default 5000
+      help
+          Defines the timeout for button presses.
+  
+ 
+  config PUSH_BUTTON_TASK_STACK_SIZE
+      int "Button update task stack size"
+      default 3072
+      help
+          Configure the stack size of the button task in bytes. Reducing this value to 2048 should not
+          cause any problems.
+  
+  endmenu

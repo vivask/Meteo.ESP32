@@ -14,6 +14,7 @@
 #include "ds18x20.h"
 #include "ze08ch2o.h"
 #include "ino_uart.h"
+#include "button.h"
 
 #include "wifi_manager.h"
 
@@ -28,6 +29,7 @@ static const char *TAG = "MAIN";
 #define ZE08CH2O_GPIO           GPIO_NUM_19
 #define INO_RXD_PIN             GPIO_NUM_18
 #define INO_TXD_PIN             GPIO_NUM_5
+#define BUTTON_PIN              GPIO_NUM_12
 
 peripheral_state_t _peripheral;
 
@@ -302,6 +304,20 @@ void cb_drop_peripheral(void *pvParameter){
     }
 }
 
+void cb_push_button(int count) {
+    ESP_LOGW(TAG, "Press count: %d", count);
+
+    if (count == 1) {
+        https_logi("Rebooting...");
+        esp_restart();
+    }
+
+    if (count == 5) {
+        https_logi("Setup mode runing..."); 
+        wifi_manager_start_setup_mode();
+    }
+}
+
 void app_main() {
     esp_err_t ret = nvs_flash_init();
     if(ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND)
@@ -322,6 +338,8 @@ void app_main() {
 #if CONFIG_ESP_TASK_WDT_CHECK_IDLE_TASK_CPU1 && !CONFIG_FREERTOS_UNICORE
     esp_task_wdt_add(xTaskGetIdleTaskHandleForCPU(1));
 #endif
+
+    button_init(BUTTON_PIN, cb_push_button);
 
     wifi_manager_start(false);
 

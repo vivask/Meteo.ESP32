@@ -173,8 +173,8 @@ static SemaphoreHandle_t _lock_file_log = NULL;
 static time_t _sntp_init_time = 0;
 static time_t _sntp_init_tiks = 0;
 
-static bool http_server_suspend = false;
-static bool http_server_resume = false;
+//static bool http_server_suspend = false;
+//static bool http_server_resume = false;
 static TaskHandle_t task_httpd_manager = NULL;
 static uint8_t httpd_request = 0;
 
@@ -248,7 +248,7 @@ void wifi_manager_disconnect_async(){
 	wifi_manager_send_message(WM_ORDER_DISCONNECT_STA, NULL);
 }
 
-static void wifi_manager_httpd(void *arg){
+/*static void wifi_manager_httpd(void *arg){
 	while(1){
 		if(http_server_suspend){
 			ESP_LOGW(TAG, "HTTPD STOPING...");
@@ -259,12 +259,12 @@ static void wifi_manager_httpd(void *arg){
 		}else if(http_server_resume){
 			http_app_start(true);
 			http_server_resume = false;
-			wifi_manager_send_message(WM_ORDER_HTTPD_REQUEST, (void*)httpd_request);
+			wifi_manager_send_message(WM_ORDER_HTTPD_REQUEST, (void*)&httpd_request);
 		}
 		vTaskDelay(100 / portTICK_RATE_MS);	
 	}
 	vTaskDelete(NULL);
-}
+}*/
 
 static esp_err_t wifi_manger_mount_fatfs(){
 	
@@ -342,11 +342,11 @@ void wifi_manager_start(bool ap_mode){
 	//xTaskCreate(&wifi_manager_httpd, "wifi_manager_httpd", configMINIMAL_STACK_SIZE*4, NULL, 20, &task_httpd_manager);
 }
 
-static void wifi_manager_umount_fatfs(){
+/*static void wifi_manager_umount_fatfs(){
     ESP_LOGD(TAG, "Unmounting FAT filesystem");
 	esp_err_t err = esp_vfs_fat_spiflash_unmount(base_path, s_wl_handle);
     ESP_ERROR_CHECK(err);
-}
+}*/
 
 static esp_err_t save_flash_log(log_message_t *msg){
 	esp_err_t esp_err = ESP_FAIL;
@@ -1795,7 +1795,7 @@ void wifi_manager( void * pvParameters ){
 
 				//http_server_resume = true;
 				http_app_start(true);
-				wifi_manager_send_message(WM_ORDER_HTTPD_REQUEST, (void*)httpd_request);
+				wifi_manager_send_message(WM_ORDER_HTTPD_REQUEST, (void*)&httpd_request);
 				ESP_LOGW(TAG, "HTTPD START");
 	
 				break;
