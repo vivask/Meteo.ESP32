@@ -72,6 +72,6 @@ void button_init(int pin, void (*func_ptr)(int)) {
 
   // Spawn a task to monitor the pins
   //xTaskCreate(&button_task, "button_task", 2048, NULL, 10, NULL);
-  xTaskCreatePinnedToCore(button_task, "button_task", CONFIG_PUSH_BUTTON_TASK_STACK_SIZE, NULL, CONFIG_PUSH_BUTTON_TASK_PRIORITY, NULL, 1);
+  xTaskCreatePinnedToCore(button_task, "button_task", configMINIMAL_STACK_SIZE*3, NULL, CONFIG_PUSH_BUTTON_TASK_PRIORITY, NULL, 1);
 
 }
