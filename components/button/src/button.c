@@ -26,21 +26,13 @@ static void oneshot_timer_callback(TimerHandle_t xTimer)
   count = 0;
 }
 
-unsigned long millis()
+static unsigned long millis()
 {
   return (unsigned long) (esp_timer_get_time() / 1000ULL);
 }
 
 static void button_task(void *pvParameter)
 {
-  gpio_set_direction(button_pin, GPIO_MODE_INPUT);
-
-  push_button_timer = xTimerCreate( NULL, pdMS_TO_TICKS(CONFIG_PUSH_BUTTON_TIMER_MS), pdFALSE, ( void * ) 0, oneshot_timer_callback);
-  if (push_button_timer == NULL) {
-    ESP_LOGE(TAG, "Can't create timer");
-    return;
-  }
-
   int buttonState = BUTTON_UP;
 
   while(1) {       
@@ -76,8 +68,16 @@ void button_init(int pin, void (*func_ptr)(int)) {
     return;
   }
 
+  gpio_set_direction(button_pin, GPIO_MODE_INPUT);
+
+  push_button_timer = xTimerCreate( NULL, pdMS_TO_TICKS(CONFIG_PUSH_BUTTON_TIMER_MS), pdFALSE, ( void * ) 0, oneshot_timer_callback);
+  if (push_button_timer == NULL) {
+    ESP_LOGE(TAG, "Can't create timer");
+    return;
+  }
+
   // Spawn a task to monitor the pins
-  //xTaskCreate(&button_task, "button_task", CONFIG_PUSH_BUTTON_TASK_STACK_SIZE, NULL, 10, NULL);
-  xTaskCreatePinnedToCore(button_task, "button_task", configMINIMAL_STACK_SIZE*CONFIG_PUSH_BUTTON_TASK_STACK_SIZE, NULL, 10, NULL, 0);
+  //xTaskCreate(&button_task, "button_task", 2048, NULL, 10, NULL);
+  xTaskCreatePinnedToCore(button_task, "button_task", 2048, NULL, 7, NULL, 1);
 
 }

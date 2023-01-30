@@ -15,5 +15,7 @@
         "chrono": "c",
         "algorithm": "c",
         "esp_timer.h": "c"
-    }
+    },
+    "idf.port": "/dev/ttyUSB0",
+    "idf.flashType": "UART"
 }

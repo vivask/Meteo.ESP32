@@ -339,8 +339,6 @@ void app_main() {
     esp_task_wdt_add(xTaskGetIdleTaskHandleForCPU(1));
 #endif
 
-    button_init(BUTTON_PIN, cb_push_button);
-
     wifi_manager_start(false);
 
     wifi_manager_set_callback(WM_EVENT_STA_GOT_IP, &cb_connection_ok);
@@ -355,5 +353,7 @@ void app_main() {
     https_client_set_stop_peripheral(&cb_stop_peripheral);
     https_client_set_start_peripheral(&cb_stop_peripheral);
     https_client_set_drop_peripheral(&cb_drop_peripheral);
+
+    button_init(BUTTON_PIN, cb_push_button);
 
 }
