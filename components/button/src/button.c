@@ -2,28 +2,19 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
-#include <freertos/timers.h>
-#include "esp_timer.h"
 
 #define BUTTON_DOWN (1)
 #define BUTTON_UP (2)
 
 const static char *TAG = "BUTTON";
 
-TimerHandle_t push_button_timer = NULL;
-
-static int count = 0;
-static long lastDebounceTime = 0;
-static long debounceDelay = 200;
 static int button_pin = -1;
-
+static unsigned long timer_start = 0;
 void (*cb_timer_shot)(int) = NULL;
 
-static void oneshot_timer_callback(TimerHandle_t xTimer)
+static void oneshot_timer_callback(int count)
 {
-	xTimerStop( xTimer, (TickType_t) 0 );
   (*cb_timer_shot)(count);
-  count = 0;
 }
 
 static unsigned long millis()
@@ -34,6 +25,9 @@ static unsigned long millis()
 static void button_task(void *pvParameter)
 {
   int buttonState = BUTTON_UP;
+  int count = 0;
+  unsigned long lastDebounceTime = 0;
+  unsigned long debounceDelay = 200;
 
   while(1) {       
     int levelHIGH = gpio_get_level(button_pin);
@@ -41,13 +35,19 @@ static void button_task(void *pvParameter)
       if( levelHIGH && buttonState == BUTTON_UP) {
         buttonState = BUTTON_DOWN;
         lastDebounceTime = millis();
-        if(xTimerIsTimerActive(push_button_timer) == pdFALSE ){
-          xTimerStart( push_button_timer, (TickType_t)0 );
+        if ( timer_start == 0 ){
+          timer_start = millis();
         }
         count++;
       }else {
         buttonState = BUTTON_UP;
       }
+    }
+
+    if ( timer_start && timer_start+CONFIG_PUSH_BUTTON_TIMER_MS <  millis() ) {
+      oneshot_timer_callback(count);
+      timer_start = 0;
+      count = 0;
     }
 
     vTaskDelay(1);
@@ -70,14 +70,8 @@ void button_init(int pin, void (*func_ptr)(int)) {
 
   gpio_set_direction(button_pin, GPIO_MODE_INPUT);
 
-  push_button_timer = xTimerCreate( NULL, pdMS_TO_TICKS(CONFIG_PUSH_BUTTON_TIMER_MS), pdFALSE, ( void * ) 0, oneshot_timer_callback);
-  if (push_button_timer == NULL) {
-    ESP_LOGE(TAG, "Can't create timer");
-    return;
-  }
-
   // Spawn a task to monitor the pins
   //xTaskCreate(&button_task, "button_task", 2048, NULL, 10, NULL);
-  xTaskCreatePinnedToCore(button_task, "button_task", 2048, NULL, 7, NULL, 1);
+  xTaskCreatePinnedToCore(button_task, "button_task", CONFIG_PUSH_BUTTON_TASK_STACK_SIZE, NULL, CONFIG_PUSH_BUTTON_TASK_PRIORITY, NULL, 1);
 
 }
