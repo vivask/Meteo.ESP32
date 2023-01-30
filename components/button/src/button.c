@@ -9,13 +9,7 @@
 const static char *TAG = "BUTTON";
 
 static int button_pin = -1;
-static unsigned long timer_start = 0;
 void (*cb_timer_shot)(int) = NULL;
-
-static void oneshot_timer_callback(int count)
-{
-  (*cb_timer_shot)(count);
-}
 
 static unsigned long millis()
 {
@@ -28,6 +22,7 @@ static void button_task(void *pvParameter)
   int count = 0;
   unsigned long lastDebounceTime = 0;
   unsigned long debounceDelay = 200;
+  unsigned long timer_start = 0;
 
   while(1) {       
     int levelHIGH = gpio_get_level(button_pin);
@@ -45,7 +40,7 @@ static void button_task(void *pvParameter)
     }
 
     if ( timer_start && timer_start+CONFIG_PUSH_BUTTON_TIMER_MS <  millis() ) {
-      oneshot_timer_callback(count);
+      (*cb_timer_shot)(count);
       timer_start = 0;
       count = 0;
     }
@@ -71,7 +66,5 @@ void button_init(int pin, void (*func_ptr)(int)) {
   gpio_set_direction(button_pin, GPIO_MODE_INPUT);
 
   // Spawn a task to monitor the pins
-  //xTaskCreate(&button_task, "button_task", 2048, NULL, 10, NULL);
-  xTaskCreatePinnedToCore(button_task, "button_task", configMINIMAL_STACK_SIZE*3, NULL, CONFIG_PUSH_BUTTON_TASK_PRIORITY, NULL, 1);
-
+  xTaskCreatePinnedToCore(button_task, "button_task", configMINIMAL_STACK_SIZE*CONFIG_PUSH_BUTTON_TASK_STACK_SIZE, NULL, CONFIG_PUSH_BUTTON_TASK_PRIORITY, NULL, 1);
 }

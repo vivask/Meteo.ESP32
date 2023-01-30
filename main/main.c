@@ -20,16 +20,19 @@
 
 static const char *TAG = "MAIN";
 
-#define DELAY_TIME_BETWEEN_ITEMS_S 5
-#define TWDT_TIMEOUT_S 60
+#define DELAY_TIME_BETWEEN_ITEMS_S  5
+#define TWDT_TIMEOUT_S              60
 
-#define I2C_SCL_IO              GPIO_NUM_22               
-#define I2C_SDA_IO              GPIO_NUM_23               
-#define DS18B20_GPIO            GPIO_NUM_21
-#define ZE08CH2O_GPIO           GPIO_NUM_19
-#define INO_RXD_PIN             GPIO_NUM_18
-#define INO_TXD_PIN             GPIO_NUM_5
-#define BUTTON_PIN              GPIO_NUM_12
+#define I2C_SCL_IO                  GPIO_NUM_22               
+#define I2C_SDA_IO                  GPIO_NUM_23               
+#define DS18B20_GPIO                GPIO_NUM_21
+#define ZE08CH2O_GPIO               GPIO_NUM_19
+#define INO_RXD_PIN                 GPIO_NUM_18
+#define INO_TXD_PIN                 GPIO_NUM_5
+#define BUTTON_PIN                  GPIO_NUM_12
+
+#define REBOOT                      2
+#define SETUP                       5
 
 peripheral_state_t _peripheral;
 
@@ -307,12 +310,12 @@ void cb_drop_peripheral(void *pvParameter){
 void cb_push_button(int count) {
     https_logw("Button pressed %d times", count);
 
-    if (count == 2) {
+    if (count == REBOOT) {
         https_logi("Rebooting...");
         esp_restart();
     }
 
-    if (count == 5) {
+    if (count == SETUP) {
         https_logi("Setup mode runing..."); 
         wifi_manager_start_setup_mode();
     }
@@ -355,5 +358,4 @@ void app_main() {
     https_client_set_drop_peripheral(&cb_drop_peripheral);
 
     button_init(BUTTON_PIN, cb_push_button);
-
 }
