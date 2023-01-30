@@ -307,7 +307,7 @@ void cb_drop_peripheral(void *pvParameter){
 void cb_push_button(int count) {
     https_logw(TAG, "Button pressed %d times", count);
 
-    if (count == 1) {
+    if (count == 2) {
         https_logi("Rebooting...");
         esp_restart();
     }
