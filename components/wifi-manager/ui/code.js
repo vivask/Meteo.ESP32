@@ -405,8 +405,8 @@ async function performConnect(conntype) {
     peap_passwd = gel("ppas").value;
     ttls_auth = gel("cb3").value;
     //ttls_user = gel("tusr").value;
-    ttls_user = gel("tusr").value;
-    ttls_passwd = identity;
+    ttls_user = identity;
+    ttls_passwd = gel("tpas").value;;
     if(gel("crt").value.length === 0){
           tls_crt_file_size = 0;
     }else{
