@@ -438,6 +438,7 @@ static void _task_load_configure(void* arg) {
             }
             // Set HV generator Radsens
             if(peripheral._radsens_hv_mode && !_upgrade_during && radsens_initialized()){
+            //if(!_upgrade_during && radsens_initialized()){
                 bool state;
                 esp_err_t err = radsens_get_hv_generator_state(&state);
                 if(err != ESP_OK){

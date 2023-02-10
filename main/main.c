@@ -56,11 +56,12 @@ static void pool_radsens() {
     //device_set_state(&_peripheral.radsens, ret);
     if(ret == ESP_ERR_TIMEOUT){
         //FLASH_LOGD("RadSens I2C Timeout");
-        https_loge("RadSens I2C Timeout");
+        ESP_LOGE(TAG, "RadSens I2C Timeout");
     } else if(ret == ESP_OK) {
+        ESP_LOGI(TAG, "intensy_dyanmic: %f", intensy_dyanmic);
         https_radsens_send_data(intensy_dyanmic, intensy_static, pulse);
     } else {
-        https_loge("%s: No ack, radsens not connected...skip...", esp_err_to_name(ret));
+        ESP_LOGE(TAG, "%s: No ack, radsens not connected...skip...", esp_err_to_name(ret));
         //FLASH_LOGE("%s: No ack, radsens not connected...skip...", esp_err_to_name(ret));    
     }
 }
