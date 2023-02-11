@@ -160,7 +160,7 @@ esp_err_t radsens_read_data(uint32_t* pulse, float* intensy_static, float* inten
     
     esp_err_t err = radsens_read(radsens_data);
     if(err == ESP_OK){
-        if(radsens_data->buffer[0] == 0x7D && radsens_data->buffer[1] == 0x02){
+        if(radsens_data->buffer[0] == CONFIG_RADSENS_DEVICE_ID && radsens_data->buffer[1] == CONFIG_RADSENS_VERSION){
             if(radsens_data->intensy_static == 0.0 || radsens_data->intensy_dynamic == 0.0) {
                return ESP_FAIL;
             }
