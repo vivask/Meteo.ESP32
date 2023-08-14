@@ -1,6 +1,6 @@
 # ESP32 meteo station
 
-Implemented support for BME280, DS18B20, Radsens, ZE08CH2O sensors. It is possible to use the MICS6814 sensor connected via arduino, part of the acduin code is located here https://github.com/vivask/Meteo.Avr. The project involves the use of backend https://github.com/vivask/Meteo.Backend.
+Implemented support for BMP280, AHT25, DS18B20, Radsens, ZE08CH2O sensors. It is possible to use the MICS6814 sensor connected via arduino, part of the acduin code is located here https://github.com/vivask/Meteo.Avr. The project involves the use of backend https://github.com/vivask/Meteo.Backend.
 
 Requires pre-installation and configuration of esp idf https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/vscode-setup.html
 
@@ -12,17 +12,17 @@ To run this example, you need an ESP32 dev board (e.g. ESP32-WROVER Kit, ESP32-E
 
 The following pin connection is used in this example.
 
-| ESP32  | BME280  | RADSENS | DS18B20 | ZE08CH2O | ARDUINO | BUTTON | SSD1306 |
-| ------ | ------- | ------- | ------- | -------- | ------- | ------ | ------- |
-| GPIO22 | SCL     | SCL     |         |          |         |        | SCL     |
-| GPIO23 | SDA     | SDA     |         |          |         |        | SDA     |
-| GPIO21 |         |         | OUT     |          |         |        |         |
-| GPIO19 |         |         |         | TX       |         |        |         |
-| GPIO5  |         |         |         |          | MISO    |        |         |
-| GPIO17 |         |         |         |          | SCLK    |        |         |
-| GPIO18 |         |         |         |          | CS      |        |         |
-| GPIO16 |         |         |         |          | RST     |        |         |
-| GPIO27 |         |         |         |          |         |   --   |         |
+| ESP32  | BMP280  | RADSENS |  AHT25  | DS18B20 | ZE08CH2O | ARDUINO | BUTTON | SSD1306 |
+| ------ | ------- | ------- | ------- | ------- | -------- | ------- | ------ | ------- |
+| GPIO22 | SCL     | SCL     | SCL     |         |          |         |        | SCL     |
+| GPIO23 | SDA     | SDA     | SDA     |         |          |         |        | SDA     |
+| GPIO21 |         |         |         | OUT     |          |         |        |         |
+| GPIO19 |         |         |         |         | TX       |         |        |         |
+| GPIO5  |         |         |         |         |          | MISO    |        |         |
+| GPIO17 |         |         |         |         |          | SCLK    |        |         |
+| GPIO18 |         |         |         |         |          | CS      |        |         |
+| GPIO16 |         |         |         |         |          | RST     |        |         |
+| GPIO27 |         |         |         |         |          |         |   --   |         |
 
 
 ### Configure the project
