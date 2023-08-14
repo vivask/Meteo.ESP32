@@ -20,7 +20,7 @@
 
 @see https://github.com/vivask/esp32-wifi-manager
 */
-include <stdlib.h>
+#include <stdlib.h>
 #include "list.h"
 
 void push_cb(CallBackList **head, Func func) {
