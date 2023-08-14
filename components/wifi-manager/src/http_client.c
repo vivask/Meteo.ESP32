@@ -1,3 +1,25 @@
+/**
+ * author:  Viktar Vasiuk
+
+   ----------------------------------------------------------------------
+    Copyright (C) Viktar Vasiuk, 2023
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+     
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+   ----------------------------------------------------------------------
+
+@see https://github.com/vivask/esp32-wifi-manager
+*/
 #include <string.h>
 #include <esp_log.h>
 #include <freertos/FreeRTOS.h>
@@ -15,9 +37,8 @@
 #include "http_client.h"
 
 #define DEFAULT_CACHE_SIZE      CONFIG_HTTP_CLIENT_TASK_CACHE_SIZE
-
-#define MAX_HTTP_URL_SIZE       64
-#define MAX_HTTP_OUTPUT_BUFFER  1024
+#define MAX_HTTP_URL_SIZE       CONFIG_HTTP_CLIENT_MAX_URL_LEN
+#define MAX_HTTP_OUTPUT_BUFFER  CONFIG_HTTP_CLIENT_MAX_RESPONSE_LEN
 
 #ifdef CONFIG_IDF_TARGET_ESP32
 #define MIN(a,b) (((a)<(b))?(a):(b))
@@ -25,7 +46,8 @@
 
 static const char *TAG = "http_client";
 
-static char local_response_buffer[MAX_HTTP_OUTPUT_BUFFER] = {0};
+// static char local_response_buffer[MAX_HTTP_OUTPUT_BUFFER] = {0};
+static char *output_buffer;  // Buffer to store response of http request from event handler
 
 static char url_buffer[MAX_HTTP_URL_SIZE] = {0};
 
@@ -43,7 +65,7 @@ QueueHandle_t http_client_order_queue;
 EventGroupHandle_t http_client_events;
 
 /* @brief callback response function pointer */
-void (*cb_response_ptr)(void*) = NULL;
+void (*cb_response_ptr)(const char*, int) = NULL;
 
 /* @brief callback http client ready function pointer */
 CallBackList* cb_ready_ptr = NULL;
@@ -154,7 +176,7 @@ BaseType_t http_client_send_message(uint16_t method, const char* uri, const char
 	return xQueueSend( http_client_send_queue, &msg, portMAX_DELAY);
 }
 
-void http_client_set_response_callback(void (*func_ptr)(void*) ){
+void http_client_set_response_callback(void (*func_ptr)(const char*, int) ){
 
 	if(cb_response_ptr == NULL && cb_response_ptr != func_ptr){
 		cb_response_ptr = func_ptr;
@@ -191,7 +213,6 @@ static char* get_http_method_name(esp_http_client_method_t method) {
 }
 
 static esp_err_t http_client_handler(esp_http_client_event_t *evt) {
-    static char *output_buffer;  // Buffer to store response of http request from event handler
     static int output_len;       // Stores number of bytes read
     static uint8_t error_count = 0;
     switch(evt->event_id) {
@@ -253,6 +274,7 @@ static esp_err_t http_client_handler(esp_http_client_event_t *evt) {
             if (output_buffer != NULL) {
                 // Response is accumulated in output_buffer. Uncomment the below line to print the accumulated response
                 // ESP_LOG_BUFFER_HEX(TAG, output_buffer, output_len);
+                if(cb_response_ptr) cb_response_ptr( output_buffer, output_len );
                 free(output_buffer);
                 output_buffer = NULL;
             }
@@ -284,12 +306,9 @@ static esp_err_t http_client_handler(esp_http_client_event_t *evt) {
     return ESP_OK;
 }
 
-static void http_client_try_to_send(http_client_response_t* response, const http_client_request_t* msg) {
+static void http_client_try_to_send(const http_client_request_t* msg) {
     esp_err_t err;
     uint8_t try_to_send = CONFIG_HTTP_CLIENT_MAX_TRY_SEND;
-
-    memset(local_response_buffer, 0x00, MAX_HTTP_OUTPUT_BUFFER);
-    memset(response, 0x00, sizeof(http_client_response_t));
 
     do {
         err = esp_http_client_perform(client);
@@ -299,16 +318,15 @@ static void http_client_try_to_send(http_client_response_t* response, const http
         vTaskDelay(100 / portTICK_RATE_MS);
     }while(try_to_send--);
 
-    response->status = esp_http_client_get_status_code(client);
-    if (err != ESP_OK) {
-        FLASH_LOGE("%s request failed: %s, http code: %d", get_http_method_name(msg->method), esp_err_to_name(err), response->status);
-        response->error = (char*)esp_err_to_name(err);
-        xEventGroupSetBits(http_client_events, HC_SEND_FAIL);
-    } else {
-        response->error = "\0";
-        response->data = local_response_buffer;
-        response->request = (http_client_request_t*)msg;
+    int http_code = esp_http_client_get_status_code(client);
+    if (err == ESP_OK && http_code == 200) {
         xEventGroupSetBits(http_client_events, HC_SEND_OK);
+    } else {
+        FLASH_LOGE("%s request failed: %s, http code: %d", 
+            get_http_method_name(msg->method), 
+            esp_err_to_name(err), 
+            http_code);
+        xEventGroupSetBits(http_client_events, HC_SEND_FAIL);
     }   
 }
 
@@ -334,43 +352,16 @@ static void http_client_send_task( void * pvParameters ) {
 
             switch(msg.method){
             case HTTP_METHOD_GET:
-            case HTTP_METHOD_DELETE:{
-                    http_client_response_t* response = (http_client_response_t*)malloc(sizeof(http_client_response_t));
-
-                    http_client_try_to_send(response, &msg);
-
-                    // /* callback */
-                    if(cb_response_ptr) cb_response_ptr( response );
-                    free((void *)response);                
-                    break;
-                }
-            case HTTP_METHOD_PUT:{
-                    http_client_response_t* response = (http_client_response_t*)malloc(sizeof(http_client_response_t));
-                    
-                    if(msg.data) {
-                        esp_http_client_set_post_field(client, msg.data, strlen(msg.data));
-                    }
-
-                    http_client_try_to_send(response, &msg);
-
-                    /* callback */
-                    if(cb_response_ptr) cb_response_ptr( response );
-                    free((void *)response);
-                    break;
-            }
-            case HTTP_METHOD_POST: {                     
-                    http_client_response_t* response = (http_client_response_t*)malloc(sizeof(http_client_response_t));
-                    
+            case HTTP_METHOD_DELETE:
+                http_client_try_to_send(&msg);
+                break;
+            case HTTP_METHOD_POST:                      
+            case HTTP_METHOD_PUT:
+                if(msg.data) {
                     esp_http_client_set_post_field(client, msg.data, strlen(msg.data));
-
-                    http_client_try_to_send(response, &msg);
-
-                    /* callback */
-                    if(cb_response_ptr) cb_response_ptr( response );
-                    free((void *)response);
-                    break;
                 }
-
+                http_client_try_to_send(&msg);
+                break;
             default:
                 FLASH_LOGE("Unknown method: %d", msg.method);
                 break;
@@ -414,7 +405,7 @@ static void http_client_order_task( void * pvParameters ) {
 
                         esp_http_client_config_t http_client_config = {
                             .event_handler = http_client_handler,
-                            .user_data = local_response_buffer,
+                            .user_data = output_buffer,
                             .transport_type = HTTP_TRANSPORT_OVER_TCP,
                             .host = wifi_config->server_address,
                             .port = wifi_config->server_port,

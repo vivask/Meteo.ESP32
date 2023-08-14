@@ -304,13 +304,10 @@ static void timer_cb( TimerHandle_t xTimer ) {
   * @param  pvParameters: Pointer to received data
   * @retval None
   */
-static void cb_http_client_response(void* pvParameters) {
-    http_client_response_t* r = (http_client_response_t*)pvParameters;
-    if (r->status != 200) {
-        ESP_LOGE(TAG, "HTTP response code: %d", r->status);
-    }else 
-    if (r->data) {  
-        cJSON *root = cJSON_Parse(r->data);
+static void cb_http_client_response(const char* data, int len) {
+    // http_client_response_t* r = (http_client_response_t*)pvParameters;
+    if (len > 0) {  
+        cJSON *root = cJSON_Parse(data);
         if (root) {
     
             // ESP_LOGI(TAG, "DATA: %s", r->data);

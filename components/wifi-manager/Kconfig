@@ -173,6 +173,18 @@ menu "WIFI Manager Configuration"
             hex "Cache size"
             default 0x1000
 
+        config HTTP_CLIENT_MAX_URL_LEN
+            int "Maximal url length"
+            default 64
+            help
+            Specify maximal url length.                       
+    
+        config HTTP_CLIENT_MAX_RESPONSE_LEN
+            int "Maximal http response length"
+            default 1024
+            help
+            Specify maximal http response length.                       
+    
         config HTTP_CLIENT_MAX_ERROR
             int "Maximal erorr"
             default 3

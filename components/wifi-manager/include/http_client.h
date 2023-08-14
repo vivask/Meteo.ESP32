@@ -1,11 +1,25 @@
 /**
- * @http_client http_client.h
- * @defgroup http_client http_client
- * @{
- *
- * ESP-IDF HTTP Client
- *
- */
+ * author:  Viktar Vasiuk
+
+   ----------------------------------------------------------------------
+    Copyright (C) Viktar Vasiuk, 2023
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+     
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+   ----------------------------------------------------------------------
+
+@see https://github.com/vivask/esp32-wifi-manager
+*/
 #pragma once
 
 #include <stdint.h>
@@ -42,15 +56,6 @@ typedef struct _http_client_request_t {
 	char 		data[MAX_REQUEST_DATA_LEN];
 }http_client_request_t;
 
-/**
- * @brief Structure used to store one message http request.
- */
-typedef struct _http_client_response_t {
-	int 					status;
-	char* 					error;
-	char* 					data;
-	http_client_request_t* request;
-}http_client_response_t;
 
 /**
  * Initialize http client
@@ -60,7 +65,7 @@ void http_client_initialize();
 /**
  * @brief Register a callback to a custom function when specific event response happens.
  */
-void http_client_set_response_callback( void (*func_ptr)(void*) );
+void http_client_set_response_callback( void (*func_ptr)(const char*, int) );
 
 /**
  * @brief Register a callback to a custom function when specific event ready happens.
