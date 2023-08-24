@@ -644,7 +644,6 @@ void app_main(void)
     gpio_set_pull_mode(DS18B20_GPIO, GPIO_PULLUP_ONLY);
     do {
         err = ds18x20_scan_devices(DS18B20_GPIO, &ds18x20_addrs, 1, &ds18x20_sensor_count);
-        SSD1306_Init_Log((err == ESP_OK && ds18x20_sensor_count > 0) ? DS18B20_OK : DS18B20_FAIL);
         if (err == ESP_OK) {
             break;
         }else {
@@ -652,6 +651,7 @@ void app_main(void)
         }
         TryToInit++;
     }while(TryToInit < MAX_TRY_INIT);
+    SSD1306_Init_Log((err == ESP_OK && ds18x20_sensor_count > 0) ? DS18B20_OK : DS18B20_FAIL);
     if(err == ESP_OK && ds18x20_sensor_count > 0){
         mr->ds18b20_status = SENSOR_OK;
         sprintf(mr->ds18b20_address, "%08X%08X", (uint32_t)(ds18x20_addrs >> 32), (uint32_t)ds18x20_addrs);
@@ -672,7 +672,6 @@ void app_main(void)
     do {
         err = (bmp280_init_desc(&bmp280_dev, BMP280_I2C_ADDRESS_0, 0, I2C_SDA_IO, I2C_SCL_IO) == ESP_OK &&
             bmp280_init(&bmp280_dev, &bmp20_params) == ESP_OK) ? ESP_OK : ESP_FAIL;
-        SSD1306_Init_Log((err == ESP_OK) ? BMP280_OK : BMP280_FAIL);
         if (err == ESP_OK) {
             break;
         }else {
@@ -680,6 +679,7 @@ void app_main(void)
         }
         TryToInit++;
     }while(TryToInit < MAX_TRY_INIT);
+    SSD1306_Init_Log((err == ESP_OK) ? BMP280_OK : BMP280_FAIL);
     bool bme280p = bmp280_dev.id == BME280_CHIP_ID;
     if(err == ESP_OK){
         mr->bmp280_status = SENSOR_OK;
@@ -696,7 +696,6 @@ void app_main(void)
     do {
         err = (radsens_init_desc(0, I2C_SDA_IO, I2C_SCL_IO) == ESP_OK && 
             radsens_init() == ESP_OK) ? ESP_OK : ESP_FAIL;
-        SSD1306_Init_Log((err == ESP_OK) ? RADSENS_OK : RADSENS_FAIL);
         if (err == ESP_OK) {
             break;
         }else {
@@ -704,6 +703,7 @@ void app_main(void)
         }
         TryToInit++;
     }while(TryToInit < MAX_TRY_INIT);
+    SSD1306_Init_Log((err == ESP_OK) ? RADSENS_OK : RADSENS_FAIL);
     if(err == ESP_OK){
         mr->radsens_status = SENSOR_OK;
         ESP_LOGI(TAG, "Radsens initialisation success");
@@ -718,7 +718,6 @@ void app_main(void)
     TryToInit = 0;
     do {
         err = ze08ch2o_init(ZE08CH2O_GPIO);
-        SSD1306_Init_Log((err == ESP_OK) ? ZE08_OK : ZE08_FAIL);
         if (err == ESP_OK) {
             break;
         }else {
@@ -726,6 +725,7 @@ void app_main(void)
         }
         TryToInit++;
     }while(TryToInit < MAX_TRY_INIT);
+    SSD1306_Init_Log((err == ESP_OK) ? ZE08_OK : ZE08_FAIL);
     if(err == ESP_OK){
         mr->ze08_status = SENSOR_OK;
         ESP_LOGI(TAG, "ZE08 initialisation success");
@@ -740,7 +740,6 @@ void app_main(void)
     TryToInit = 0;
     do {
         err = mics6814_init(MICS6814_MISO, MICS6814_SCLK, MICS6814_CS);
-        SSD1306_Init_Log((err == ESP_OK) ? MICS6814_OK : MICS6814_FAIL);
         if (err == ESP_OK) {
             break;
         }else {
@@ -748,6 +747,7 @@ void app_main(void)
         }
         TryToInit++;
     }while(TryToInit < MAX_TRY_INIT);
+    SSD1306_Init_Log((err == ESP_OK) ? MICS6814_OK : MICS6814_FAIL);
     if (err == ESP_OK) {
         mr->mics6814_status = SENSOR_OK;
         ESP_LOGI(TAG, "MICS6814 initialisation success");
@@ -765,7 +765,6 @@ void app_main(void)
     do {
         err = (aht_init_desc(&aht25_dev, AHT_I2C_ADDRESS_GND, 0, I2C_SDA_IO, I2C_SCL_IO) == ESP_OK && 
             aht_init(&aht25_dev) == ESP_OK) ? ESP_OK : ESP_FAIL;  
-        SSD1306_Init_Log((err == ESP_OK) ? AHT25_OK : AHT25_FAIL);
         if (err == ESP_OK) {
             break;
         }else {
@@ -773,6 +772,7 @@ void app_main(void)
         }
         TryToInit++;
     }while(TryToInit < MAX_TRY_INIT);
+    SSD1306_Init_Log((err == ESP_OK) ? AHT25_OK : AHT25_FAIL);
     if(err == ESP_OK){
         mr->aht25_status = SENSOR_OK;
         ESP_LOGI(TAG, "AHT25 initialisation success");

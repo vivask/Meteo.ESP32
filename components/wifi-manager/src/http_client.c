@@ -88,14 +88,7 @@ static char* get_full_path(const char* uri) {
 }
 
 static BaseType_t is_wifi_connected() {
-    const TickType_t xTicksToWait = 1 / portTICK_PERIOD_MS;
-    EventBits_t uxBits = xEventGroupWaitBits(
-                http_client_events,     // The event group being tested.
-                HC_WIFI_OK,             // The bits within the event group to wait for.
-                pdFALSE,                // HC_WIFI_OK should be not cleared before returning.
-                pdFALSE,                // Don't wait for both bits, either bit will do.
-                xTicksToWait );         // Wait a maximum of 1ms for either bit to be set.                            
-
+    EventBits_t uxBits = xEventGroupGetBits(http_client_events);
     return ((uxBits & HC_WIFI_OK) == 0) ? pdFALSE : pdTRUE;
 }
 
@@ -295,7 +288,6 @@ static esp_err_t http_client_handler(esp_http_client_event_t *evt) {
                 if(!ota(output_buffer, output_len)){
                     if(cb_response_ptr) cb_response_ptr( output_buffer, output_len );
                 }else {
-                    run_cb(cb_not_ready_ptr, NULL);
                     xEventGroupClearBits(http_client_events, HC_STATUS_OK);
                     firmware_upgrade(cb_ota_finish);
                 }
@@ -407,13 +399,7 @@ static void http_client_order_task( void * pvParameters ) {
     for(;;){
         xStatus = xQueueReceive( http_client_order_queue, &order, portMAX_DELAY );
         if( xStatus == pdPASS ){
-            const TickType_t xTicksToWait = 100 / portTICK_PERIOD_MS;
-            EventBits_t uxBits = xEventGroupWaitBits(
-                        http_client_events,     // The event group being tested.
-                        HC_STATUS_OK,           // The bits within the event group to wait for.
-                        pdFALSE,                // HTTP_CLIENT_STATUS_OK should be not cleared before returning.
-                        pdFALSE,                // Don't wait for both bits, either bit will do.
-                        xTicksToWait );         // Wait a maximum of 100ms for either bit to be set.                            
+            EventBits_t uxBits = xEventGroupGetBits(http_client_events);
 
             switch(order){
                 case HC_ORDER_DISCONNECT:

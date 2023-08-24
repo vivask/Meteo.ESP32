@@ -822,6 +822,13 @@ void wifi_manager( void * pvParameters ){
 				/* callback */
 				if(cb_ptr_arr[msg.code]) (*cb_ptr_arr[msg.code])(NULL);
 
+				/* reset if esp32 configuration complet */
+				uxBits = xEventGroupGetBits(wifi_manager_event_group);
+				if(xTimerIsTimerActive(wifi_manager_restart_timer) == pdTRUE && uxBits & WIFI_MANAGER_CONFIGURE_MODE_BIT){
+					ESP_LOGI(TAG, "ESP32 Configuration complete!");
+					esp_restart();
+				}
+
 				break;
 
 			case WM_ORDER_CONNECT_STA:
@@ -986,6 +993,7 @@ void wifi_manager( void * pvParameters ){
 
 					/* callback */
 					if(cb_ptr_arr[msg.code]) (*cb_ptr_arr[msg.code])(NULL);
+					
 				}
 
 				break;
@@ -1036,16 +1044,6 @@ void wifi_manager( void * pvParameters ){
 				if(strlen(wifi_manager_get_ntp_server_address())) {
 					ESP_ERROR_CHECK(initialize_ntp(wifi_manager_config->ipv4_zone, wifi_manager_get_ntp_server_address()));
 				}
-
-			    //https_client_init(wifi_manager_get_httpd_config()->address, wifi_manager_get_httpd_config()->port);
-
-				//httpd_request = (https_check("HTTP Client configured sucess!") == ESP_OK);
-				//ESP_LOGW(TAG, "Httpd request: %s", (httpd_request == true) ? "SUCESS" : "FAIL");
-
-				//http_server_resume = true;
-				//start_rest_server(CONFIG_STORE_BASE_PATH);
-				//wifi_manager_send_message(WM_ORDER_HTTPD_REQUEST, (void*)&httpd_request);
-				//ESP_LOGW(TAG, "HTTPD START");
 
 				/* callback */
 				if(cb_ptr_arr[msg.code]) (*cb_ptr_arr[msg.code])(NULL);

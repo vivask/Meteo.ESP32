@@ -90,14 +90,7 @@ static void save_flash_log(log_message_t *msg){
     esp32_config_t* wifi_config = wifi_manager_get_config();
     if(wifi_config->ipv4_ntp) {
         /* Check HTTP client ready */
-        const TickType_t xTicksToWait = 100 / portTICK_PERIOD_MS;
-        EventBits_t uxBits = xEventGroupWaitBits(
-            flash_log_events,           // The event group being tested.
-            HC_STATUS_OK,               // The bits within the event group to wait for.
-            pdFALSE,                    // HC_STATUS_OK should be not cleared before returning.
-            pdFALSE,                    // Don't wait for both bits, either bit will do.
-            xTicksToWait );             // Wait until the bit be set.          
-
+        EventBits_t uxBits = xEventGroupGetBits(flash_log_events);
         if( (uxBits & HC_STATUS_OK) == 0 ) {
             return;
         }
