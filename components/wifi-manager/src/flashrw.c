@@ -68,7 +68,7 @@ char* read_flash_json_data(const char* fName) {
 	char* json = NULL;
     FILE *f = fopen(fName, "r");
     if (f == NULL) {
-        ESP_LOGE(TAG, "Failed to open file %s for writing", fName);
+        ESP_LOGE(TAG, "Failed to open file %s for reading", fName);
     }else{
         fseek(f, 0L, SEEK_END); 
         size_t size = ftell(f);

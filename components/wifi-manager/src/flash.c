@@ -29,6 +29,7 @@
 #include <freertos/event_groups.h>
 
 #include "spiffs.h"
+#include "ota.h"
 #include "manager.h"
 #include "ntp_client.h"
 #include "http_client.h"
@@ -37,25 +38,24 @@
   
 #ifdef CONFIG_USE_FLASH_LOGGING  
 
+#define STORE_BASE_PATH             "/"CONFIG_STORE_MOUNT_POINT   
+#define LOG_FILE STORE_BASE_PATH    "/log.txt"
+
+#ifdef CONFIG_WEB_USE_STORE
+#define WWW_BASE_PATH               "/"CONFIG_WEB_STORE_MOUNT_POINT       
+#endif
+
+#ifdef CONFIG_STORE_CHECK_ON_START
+#define CHECK_STORE_ON_START 	1
+#else
+#define CHECK_STORE_ON_START 	0
+#endif
 
 #ifdef CONFIG_WEB_STORE_CHECK_ON_START
 #define CHECK_WEB_STORE_ON_START 	1
 #else
 #define CHECK_WEB_STORE_ON_START 	0
 #endif
-
-#ifdef CONFIG_WIFI_STORE_CHECK_ON_START
-#define CHECK_WIFI_STORE_ON_START 	1
-#else
-#define CHECK_WIFI_STORE_ON_START 	0
-#endif
-
-#ifdef CONFIG_WIFI_USE_STORE
-#define MOUNT_POINT CONFIG_WIFI_STORE_BASE_PATH
-#else
-#define MOUNT_POINT CONFIG_WEB_STORE_BASE_PATH
-#endif
-#define LOG_FILE MOUNT_POINT "/log.txt"
 
 #define DEFAULT_CACHE_SIZE      CONFIG_FLASH_LOG_TASK_CACHE_SIZE
 
@@ -268,22 +268,24 @@ void init_flash() {
     }
     ESP_ERROR_CHECK(ret);
 
+#if CONFIG_WEB_USE_STORE
 	/* mount spif file system on flash memory */
 	ESP_ERROR_CHECK(init_spiffs(
-		CONFIG_WEB_STORE_BASE_PATH,
+		WWW_BASE_PATH,
 		CONFIG_WEB_STORE_MAX_FILES,
 		CHECK_WEB_STORE_ON_START
 		));
-
-#if CONFIG_WIFI_USE_STORE
-	/* mount spif file system on flash memory */
-	ESP_ERROR_CHECK(init_spiffs(
-		CONFIG_WIFI_STORE_BASE_PATH,
-		CONFIG_WIFI_STORE_MAX_FILES,
-		CHECK_WIFI_STORE_ON_START
-		));
 #endif
 
+	/* mount spif file system on flash memory */
+	ESP_ERROR_CHECK(init_spiffs(
+		STORE_BASE_PATH,
+		CONFIG_STORE_MAX_FILES,
+		CHECK_STORE_ON_START
+		));
+
+    get_sha256_of_partitions();
+    
 #ifdef CONFIG_USE_FLASH_LOGGING    
 	/* memory allocation */
 	flash_log_queue = xQueueCreate( 4, sizeof(flash_log_request_t) );  

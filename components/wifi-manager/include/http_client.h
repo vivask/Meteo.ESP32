@@ -30,10 +30,10 @@
 #define MAX_HTTP_URI_LEN       	64
 #define MAX_REQUEST_DATA_LEN	1024
 
-#define HC_STATUS_OK  	BIT0	// Set if http connection established
-#define HC_WIFI_OK		BIT1	// Set if wifi connection established
-#define HC_SEND_OK  	BIT2	// Set if sending completed successfully
-#define HC_SEND_FAIL  	BIT3	// Set if send failed
+#define HC_STATUS_OK  	  BIT0	// Set if http connection established
+#define HC_WIFI_OK		    BIT1	// Set if wifi connection established
+#define HC_SEND_OK  	    BIT2	// Set if sending completed successfully
+#define HC_SEND_FAIL  	  BIT3	// Set if send failed
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,7 +43,8 @@ typedef enum order_code_t {
 	HC_NONE = 0,
 	HC_ORDER_CONECT = 1,
 	HC_ORDER_DISCONNECT = 2,
-	HC_MESSAGE_CODE_COUNT = 3 /* important for the callback array */
+  HC_ORDER_OTA = 3,
+	HC_MESSAGE_CODE_COUNT = 4 /* important for the callback array */
 }order_code_t;
 
 

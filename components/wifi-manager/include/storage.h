@@ -132,8 +132,8 @@ typedef struct _esp32_config_t {
     char* wifi_identity;
     char* wifi_username;
     char* wifi_password;
-    char* wifi_phase1;
-    char* wifi_phase2;
+    char* wifi_auth;
+    char* wifi_inner;
     char* wifi_ca;
     char* wifi_crt;
     char* wifi_key;
@@ -154,6 +154,7 @@ typedef struct _esp32_config_t {
     char* client_ca;
     char* client_crt;
     char* client_key;
+    char* ota_api;
 }esp32_config_t;
 
 

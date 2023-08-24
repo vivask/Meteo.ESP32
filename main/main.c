@@ -307,7 +307,7 @@ static void timer_cb( TimerHandle_t xTimer ) {
 static void cb_http_client_response(const char* data, int len) {
     // http_client_response_t* r = (http_client_response_t*)pvParameters;
     if (len > 0) {  
-        cJSON *root = cJSON_Parse(data);
+        cJSON *root = cJSON_Parse(data); 
         if (root) {
     
             // ESP_LOGI(TAG, "DATA: %s", r->data);
@@ -320,7 +320,7 @@ static void cb_http_client_response(const char* data, int len) {
                 if ( order->valueint ) {
                     ESP_LOGW(TAG, "Setup mode...");
                     vTaskDelay(1000 / portTICK_RATE_MS);
-                    // wifi_manager_start_setup_mode();
+                    wifi_manager_start_setup_mode();
                 }
             }
             // Check order reboot
@@ -331,7 +331,7 @@ static void cb_http_client_response(const char* data, int len) {
                 if( order->valueint ) {
                     ESP_LOGW(TAG, "REBOOT...");
                     vTaskDelay(1000 / portTICK_RATE_MS);
-                    // esp_restart();
+                    esp_restart();
                 }
             }
             // Check order radsens setup
@@ -574,6 +574,8 @@ void app_main(void)
 	/* initialize flash */
 	init_flash();
 
+    // wifi_manager_start_setup_mode();
+
     /* I2C initialize */
     ESP_ERROR_CHECK(i2cdev_init());
     vTaskDelay(100 / portTICK_RATE_MS);
@@ -589,7 +591,7 @@ void app_main(void)
         SSD1306_Init_Log("Loading...");
         SSD1306_ON();
     }
-
+   
     /* WIFI initialize */
     wifi_manager_start(false);
 

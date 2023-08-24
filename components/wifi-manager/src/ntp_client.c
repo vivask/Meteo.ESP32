@@ -36,7 +36,7 @@ static time_t _sntp_init_tiks = 0;
 static bool _sntp_started = false;
 static bool _sntp_init_fail = true;
 
-static char TIMEZONE[] = "undefined";
+static char TIMEZONE[64] = "undefined";
 
 bool get_sntp_status() {
 	return !_sntp_init_fail;
@@ -65,7 +65,6 @@ esp_err_t initialize_ntp(const char* timezone, const char* ntp_server_address)
         return ESP_FAIL;
     }
     strcpy(TIMEZONE, timezone);
-    strcpy(TIMEZONE, "<+03>-3");
 
     ESP_LOGI(TAG, "TIMEZONE: %s", TIMEZONE);
 

@@ -31,6 +31,10 @@
 #include <esp_crt_bundle.h>
 #endif
 
+#if CONFIG_USE_OTA
+#include "ota.h"
+#endif
+
 #include "list.h"
 #include "manager.h"
 #include "flash.h"
@@ -116,7 +120,17 @@ static void cb_wifi_lost(void* pvParameter) {
     xEventGroupClearBits(http_client_events, HC_WIFI_OK);
 }
 
-void http_client_destroy() {
+static void cb_ota_finish(bool fail) {
+    if(fail){
+        run_cb(cb_ready_ptr, NULL);
+        xEventGroupSetBits(http_client_events, HC_STATUS_OK);
+    }
+}
+
+void http_client_destroy() {   
+    run_cb(cb_not_ready_ptr, NULL);
+    xEventGroupClearBits(http_client_events, HC_WIFI_OK);
+
 	vTaskDelete(task_http_client_send);
 	task_http_client_send = NULL;
 
@@ -274,7 +288,17 @@ static esp_err_t http_client_handler(esp_http_client_event_t *evt) {
             if (output_buffer != NULL) {
                 // Response is accumulated in output_buffer. Uncomment the below line to print the accumulated response
                 // ESP_LOG_BUFFER_HEX(TAG, output_buffer, output_len);
+#ifndef CONFIG_USE_OTA
                 if(cb_response_ptr) cb_response_ptr( output_buffer, output_len );
+#else
+                if(!ota(output_buffer, output_len)){
+                    if(cb_response_ptr) cb_response_ptr( output_buffer, output_len );
+                }else {
+                    run_cb(cb_not_ready_ptr, NULL);
+                    xEventGroupClearBits(http_client_events, HC_STATUS_OK);
+                    firmware_upgrade(cb_ota_finish);
+                }
+#endif                
                 free(output_buffer);
                 output_buffer = NULL;
             }
@@ -413,7 +437,7 @@ static void http_client_order_task( void * pvParameters ) {
                             .method = HTTP_METHOD_GET,
                             .url = get_full_path(CONFIG_HTTP_CLIENT_CONNECT_PATH),
                         };
-
+                        
                         if (strcmp(wifi_config->server_auth, "no") == 0 || strcmp(wifi_config->server_auth, "ssl") == 0) {
                             http_client_config.auth_type = HTTP_AUTH_TYPE_NONE;
                         }else {
@@ -433,6 +457,9 @@ static void http_client_order_task( void * pvParameters ) {
                             http_client_config.client_cert_len = strlen(wifi_config->client_crt)+1;
                             http_client_config.client_key_pem = wifi_config->client_key;
                             http_client_config.client_key_len = strlen(wifi_config->client_key)+1;       
+#ifdef CONFIG_SKIP_COMMON_NAME_CHECK
+                            http_client_config.skip_cert_common_name_check = true;
+#endif
                         }
 
                         do {

@@ -87,7 +87,7 @@
 #endif
 /* --- end macros --- */
 
-
+#define STORE_BASE_PATH             "/"CONFIG_WEB_STORE_MOUNT_POINT   
 #define DEFAULT_CACHE_SIZE 			CONFIG_WIFI_MANAGER_TASK_CACHE_SIZE
 #define DEFAULT_TIMEZONE 			CONFIG_TIMEZONE
 
@@ -530,8 +530,8 @@ void free_esp32_config(esp32_config_t* config) {
 	free((void *)config->wifi_wpa);
 	free((void *)config->wifi_identity);
 	free((void *)config->wifi_password);
-	free((void *)config->wifi_phase1);
-	free((void *)config->wifi_phase2);
+	free((void *)config->wifi_auth);
+	free((void *)config->wifi_inner);
 	free((void *)config->wifi_ca);
 	free((void *)config->wifi_crt);
 	free((void *)config->wifi_key);
@@ -546,6 +546,7 @@ void free_esp32_config(esp32_config_t* config) {
 	free((void *)config->server_address);
 	free((void *)config->server_port);
 	free((void *)config->server_auth);
+	free((void *)config->ota_api);
 	free((void *)config->client_username);
 	free((void *)config->client_password);
 	free((void *)config->client_ca);
@@ -742,7 +743,7 @@ void wifi_manager( void * pvParameters ){
 	ESP_ERROR_CHECK(esp_wifi_start());
 
 	/* start http server */
-	start_rest_server(CONFIG_WEB_STORE_BASE_PATH);
+	start_rest_server(STORE_BASE_PATH);
 
 	/* wifi scanner config */
 	wifi_scan_config_t scan_config = {
@@ -950,7 +951,7 @@ void wifi_manager( void * pvParameters ){
 
 				/* restart HTTP daemon */
 				stop_rest_server();
-				start_rest_server(CONFIG_WEB_STORE_BASE_PATH);
+				start_rest_server(STORE_BASE_PATH);
 
 				/* start DNS */
 				start_dns_server();
@@ -981,7 +982,7 @@ void wifi_manager( void * pvParameters ){
 
 					/* restart HTTP daemon */
 					stop_rest_server();
-					start_rest_server(CONFIG_WEB_STORE_BASE_PATH);
+					start_rest_server(STORE_BASE_PATH);
 
 					/* callback */
 					if(cb_ptr_arr[msg.code]) (*cb_ptr_arr[msg.code])(NULL);
@@ -1042,7 +1043,7 @@ void wifi_manager( void * pvParameters ){
 				//ESP_LOGW(TAG, "Httpd request: %s", (httpd_request == true) ? "SUCESS" : "FAIL");
 
 				//http_server_resume = true;
-				//start_rest_server(CONFIG_WEB_STORE_BASE_PATH);
+				//start_rest_server(CONFIG_STORE_BASE_PATH);
 				//wifi_manager_send_message(WM_ORDER_HTTPD_REQUEST, (void*)&httpd_request);
 				//ESP_LOGW(TAG, "HTTPD START");
 
@@ -1098,13 +1099,13 @@ static inline void clear_buffer(uint8_t *buffer){
 }
 
 static ttls_authentication_t phase2(esp32_config_t* config) {
-	if (strcmp(config->wifi_phase2, "mschapv2") ==0) {
+	if (strcmp(config->wifi_inner, "mschapv2") ==0) {
 		return MSCHAPV2;
 	} else
-	if (strcmp(config->wifi_phase2, "mschap") ==0) {
+	if (strcmp(config->wifi_inner, "mschap") ==0) {
 		return MSCHAP;
 	} else
-	if (strcmp(config->wifi_phase2, "pap") ==0) {
+	if (strcmp(config->wifi_inner, "pap") ==0) {
 		return PAP;
 	}
 	return CHAP;
@@ -1130,13 +1131,13 @@ void wifi_manager_set_eap_config() {
 		ESP_ERROR_CHECK( esp_wifi_sta_wpa2_ent_set_ca_cert((unsigned char*)wifi_manager_config->wifi_ca, 
 		strlen(wifi_manager_config->wifi_ca)+1) ); 
 	}
-	if (wifi_manager_config->wifi_phase1 && strcmp(wifi_manager_config->wifi_phase1, "tls") == 0) {
+	if (wifi_manager_config->wifi_auth && strcmp(wifi_manager_config->wifi_auth, "tls") == 0) {
 		ESP_ERROR_CHECK( esp_wifi_sta_wpa2_ent_set_cert_key((unsigned char*)wifi_manager_config->wifi_crt,  
 		strlen(wifi_manager_config->wifi_crt)+1,
 		(unsigned char*)wifi_manager_config->wifi_key, 
 		strlen(wifi_manager_config->wifi_crt)+1, NULL, 0) );		
 	}
-	if (wifi_manager_config->wifi_phase2 && strcmp(wifi_manager_config->wifi_phase2, "ttls") == 0) {
+	if (wifi_manager_config->wifi_inner && strcmp(wifi_manager_config->wifi_inner, "ttls") == 0) {
 		ESP_ERROR_CHECK( esp_wifi_sta_wpa2_ent_set_ttls_phase2_method(phase2(wifi_manager_config)) );
 	}
 }

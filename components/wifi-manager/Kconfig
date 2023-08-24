@@ -94,28 +94,23 @@ menu "WIFI Manager Configuration"
             int "Maximum number of available files for VFS FAT"
             default 6
 
-        config WIFI_USE_STORE
-            bool "Use dedicated storage"
-            default y
+        config STORE_MOUNT_POINT
+            string "VFS mount point"
+            default "wifi"
+            help
+            Specify VFS mount point.
 
-        if WIFI_USE_STORE
-            config WIFI_STORE_BASE_PATH
-                string "VFS base path"
-                default "/wifi"
-                help
-                Specify VFS base path.
-
-            config WIFI_STORE_MAX_FILES
-                int "Maximal files use"
-                default 5
-                help
-                Specify SPIFFS max file opened.
-
-            config WIFI_STORE_CHECK_ON_START
-                bool "Check spiffs after mount"
-                default false
-        endif
-
+        config STORE_CHECK_ON_START
+            bool "Check spiffs after mount"
+            default false
+    
+        config STORE_MAX_FILES
+            int "Maximal files use"
+            default 5
+            help
+            Specify SPIFFS max file opened.
+    
+    
     endmenu
     
     menu "Flash Logging Configuration"
@@ -143,27 +138,33 @@ menu "WIFI Manager Configuration"
 
     menu "HTTP Server Configuration"
    
-        config WEB_STORE_BASE_PATH
-            string "VFS base path"
-            default "/www"
-            help
-            Specify VFS base path.
-
-        config WEB_STORE_CHECK_ON_START
-            bool "Check spiffs after mount"
-            default false
-    
-        config WEB_STORE_MAX_FILES
-            int "Maximal files use"
-            default 5
-            help
-            Specify SPIFFS max file opened.
-
         config WEB_BASE_API
             string "API base path"
             default "/api/v1"
             help
             Specify API base path.
+
+        config WEB_USE_STORE
+            bool "Use dedicated storage"
+            default y
+    
+        if WEB_USE_STORE
+            config WEB_STORE_MOUNT_POINT
+                string "VFS mount point"
+                default "www"
+                help
+                Specify VFS mount point.
+
+            config WEB_STORE_CHECK_ON_START
+                bool "Check spiffs after mount"
+                default false
+        
+            config WEB_STORE_MAX_FILES
+                int "Maximal files use"
+                default 5
+                help
+                Specify SPIFFS max file opened.   
+        endif
         
     endmenu
 
@@ -208,6 +209,27 @@ menu "WIFI Manager Configuration"
             default "/orders"
             help
             Specify default connect path.               
+    endmenu
+
+    menu "OTA"
+
+        config USE_OTA
+            bool "Use Over The Air Updates"
+            default y
+
+        if USE_OTA 
+            config OTA_TASK_CACHE_SIZE
+                hex "Cache size"
+                default 0x2000
+
+            config OTA_JSON_FIELD
+                string "OTA json field name"
+                default "firmware"
+                help
+                Specify OTA json field name.
+                
+        endif
+
     endmenu
 
 endmenu

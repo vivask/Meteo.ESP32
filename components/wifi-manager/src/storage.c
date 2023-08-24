@@ -32,23 +32,19 @@
 #include "flash.h"
 #include "storage.h"
 
-#ifdef CONFIG_WIFI_USE_STORE
-#define MOUNT_POINT CONFIG_WIFI_STORE_BASE_PATH
-#else
-#define MOUNT_POINT CONFIG_WEB_STORE_BASE_PATH
-#endif
+#define STORE_BASE_PATH	"/"CONFIG_WEB_STORE_MOUNT_POINT   
 
-#define WIFI_CONFIG_FILE MOUNT_POINT "/wifi_config.json"
-#define WIFI_CA_FILE MOUNT_POINT "/wifi_ca.json"
-#define WIFI_CRT_FILE MOUNT_POINT "/wifi_crt.json"
-#define WIFI_KEY_FILE MOUNT_POINT "/wifi_key.json"
+#define WIFI_CONFIG_FILE STORE_BASE_PATH "/wifi_config.json"
+#define WIFI_CA_FILE STORE_BASE_PATH "/wifi_ca.json"
+#define WIFI_CRT_FILE STORE_BASE_PATH "/wifi_crt.json"
+#define WIFI_KEY_FILE STORE_BASE_PATH "/wifi_key.json"
 
-#define IPV4_CONFIG_FILE MOUNT_POINT "/ipv4_config.json"
+#define IPV4_CONFIG_FILE STORE_BASE_PATH "/ipv4_config.json"
 
-#define HTTP_CONFIG_FILE MOUNT_POINT "/http_config.json"
-#define HTTP_CA_FILE MOUNT_POINT "/http_ca.json"
-#define HTTP_CRT_FILE MOUNT_POINT "/http_crt.json"
-#define HTTP_KEY_FILE MOUNT_POINT "/http_key.json"
+#define HTTP_CONFIG_FILE STORE_BASE_PATH "/http_config.json"
+#define HTTP_CA_FILE STORE_BASE_PATH "/http_ca.json"
+#define HTTP_CRT_FILE STORE_BASE_PATH "/http_crt.json"
+#define HTTP_KEY_FILE STORE_BASE_PATH "/http_key.json"
 
 static const char TAG[] = "wifi_store";
 
@@ -59,7 +55,7 @@ static char* copy_json_item(cJSON* json, const char* item_name) {
 		FLASH_LOGW("Json object [%s] not found", item_name);
 		wifi_manager_remove_config();
 	}else {
-		size_t len = strlen(item->valuestring)*sizeof(char) + 2;
+		size_t len = (!item->valuestring) ? 0 : strlen(item->valuestring)*sizeof(char) + 2;
 		if (len > 2) {
 			char* dest = (char*)malloc(len);
 			memcpy((void*)dest, (void*)item->valuestring, len);
@@ -76,8 +72,8 @@ static void wifi_json_string_to_config(esp32_config_t* config, const char* wifi_
 	config->wifi_identity = copy_json_item(wifi_json, "wifi_identity");
 	config->wifi_username = copy_json_item(wifi_json, "wifi_username");
 	config->wifi_password = copy_json_item(wifi_json, "wifi_password");
-	config->wifi_phase1 = copy_json_item(wifi_json, "wifi_phase1");
-	config->wifi_phase2 = copy_json_item(wifi_json, "wifi_phase2");
+	config->wifi_auth = copy_json_item(wifi_json, "wifi_auth");
+	config->wifi_inner = copy_json_item(wifi_json, "wifi_inner");
 	cJSON_Delete(wifi_json);
 }
 
@@ -117,6 +113,7 @@ static void http_json_string_to_config(esp32_config_t* config, const char* http_
 	config->server_address = copy_json_item(http_json, "server_address");
 	config->server_port = cJSON_GetObjectItem(http_json, "server_port")->valueint;
 	config->server_api = copy_json_item(http_json, "server_api");
+	config->ota_api = copy_json_item(http_json, "ota_api");
 	config->server_auth = copy_json_item(http_json, "server_auth");
 	config->client_username = copy_json_item(http_json, "client_username");
 	config->client_password = copy_json_item(http_json, "client_password");
