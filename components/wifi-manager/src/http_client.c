@@ -237,7 +237,8 @@ static esp_err_t http_client_handler(esp_http_client_event_t *evt) {
                 http_client_send_order(HC_ORDER_DISCONNECT);
             }
             if (error_count > CONFIG_HTTP_CLIENT_MAX_TRY_CONNECT) {
-                esp_restart();
+                FLASH_LOGE("The number of http client errors has exceeded the allowable value");
+                delayed_reboot(2000);
             }
             break;
         case HTTP_EVENT_ON_CONNECTED:

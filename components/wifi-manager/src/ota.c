@@ -23,6 +23,7 @@
 #include <esp_log.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
+#include <freertos/timers.h>
 #include <esp_ota_ops.h>
 #include <esp_http_client.h>
 #include <esp_https_ota.h>
@@ -35,6 +36,7 @@
 #define DEFAULT_CACHE_SIZE      CONFIG_OTA_TASK_CACHE_SIZE
 #define OTA_RECV_TIMEOUT_MS     5000
 #define HASH_LEN                32
+#define OTA_RESTART_TIMER_MS    2000
 
 static const char *TAG = "OTA";
 
@@ -47,7 +49,10 @@ void (*cb_finish_ptr)(bool) = NULL;
 bool ota(const char* data, int size) {
     bool ret = false;
     cJSON *root = cJSON_Parse(data);
-    cJSON* item = cJSON_GetObjectItem(root, CONFIG_OTA_JSON_FIELD);
+    esp32_config_t* wifi_config = wifi_manager_get_config();
+    cJSON* item = cJSON_GetObjectItem(root, wifi_config->ota_api);
+    // ESP_LOGE(TAG, "%s", data);
+    // cJSON* item = cJSON_GetObjectItem(root, "firmware");
     if (item && item->valuestring) {
         size_t len = strlen(item->valuestring);
         if (len) {
@@ -129,7 +134,8 @@ static void firmware_upgrade_task(void  *pvParameter){
     if (err == ESP_OK) {
         FLASH_LOGI("Firmware upgrade success");
         if(cb_finish_ptr) cb_finish_ptr(false);
-        esp_restart();
+        /* restart after OTA_RESTART_TIMER_MS */
+        delayed_reboot(OTA_RESTART_TIMER_MS);
     } else {
         FLASH_LOGE("Firmware upgrade failed");
         if(cb_finish_ptr) cb_finish_ptr(true);

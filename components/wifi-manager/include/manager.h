@@ -377,6 +377,8 @@ char* wifi_manager_get_ntp_server_address();
 
 void wifi_manager_start_setup_mode();
 
+void delayed_reboot(const uint32_t tick);
+
 #ifdef __cplusplus
 }
 #endif

@@ -86,7 +86,22 @@ BaseType_t flash_log_send_message(uint32_t order, log_message_t* msg, send_msg f
 #endif
 
 #ifdef CONFIG_USE_FLASH_LOGGING    
-static void save_flash_log(log_message_t *msg){   
+static void save_flash_log(log_message_t *msg){ 
+    esp32_config_t* wifi_config = wifi_manager_get_config();
+    if(wifi_config->ipv4_ntp) {
+        /* Check HTTP client ready */
+        const TickType_t xTicksToWait = 100 / portTICK_PERIOD_MS;
+        EventBits_t uxBits = xEventGroupWaitBits(
+            flash_log_events,           // The event group being tested.
+            HC_STATUS_OK,               // The bits within the event group to wait for.
+            pdFALSE,                    // HC_STATUS_OK should be not cleared before returning.
+            pdFALSE,                    // Don't wait for both bits, either bit will do.
+            xTicksToWait );             // Wait until the bit be set.          
+
+        if( (uxBits & HC_STATUS_OK) == 0 ) {
+            return;
+        }
+    }
     flash_log_send_message(FLASH_LOG_SAVE, msg, NULL);
 }
 #endif

@@ -1198,9 +1198,28 @@ char* wifi_manager_get_ntp_server_address() {
 
 void wifi_manager_start_setup_mode() {
 	wifi_manager_remove_config();
-	esp_restart();
+	delayed_reboot(2000);
 }
 
 esp32_config_t* wifi_manager_get_config() {
 	return wifi_manager_config;
+}
+
+static void delayed_reboot_cb( TimerHandle_t xTimer){
+
+	/* stop the timer */
+	xTimerStop( xTimer, (TickType_t) 0 );
+
+
+	/* Attempt to reboot */
+	ESP_LOGW(TAG, "Attempt to reboot");
+	esp_restart();
+}
+
+void delayed_reboot(const uint32_t tick){
+	FLASH_LOGW("Attempt to reboot");
+	/* create timer for to keep track of esp restart */
+	TimerHandle_t* timer = xTimerCreate( NULL, pdMS_TO_TICKS(tick), pdFALSE, ( void * ) 0, delayed_reboot_cb);
+	xTimerStart( timer, (TickType_t)0 );
+	while(1) vTaskDelay(1000 / portTICK_RATE_MS);
 }

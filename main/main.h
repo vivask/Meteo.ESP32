@@ -41,6 +41,8 @@ extern "C" {
 #define CMD_RADSENS_SENS		"r_sens"		// Radsens sensitivity
 #define CMD_CLEAR_JOURNAL		"clear_j"		// Clear flash logging
 #define CMD_DIGISPARK_REBOOT	"dg_reboot"		// Reboot digispark module
+#define CMD_CODE				"code"			// error code
+#define CMD_MESSAGE				"message"		// error message
 
 /**
  * @brief Define screen codes

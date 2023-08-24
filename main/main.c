@@ -247,8 +247,9 @@ static void cb_down_shot() {
   * @retval None
   */
 static void cb_up_shot(unsigned long time) {
+    FLASH_LOGW("Button press time: %lu", time);
     if (time > CONFIG_RESET_ESP32 && time < CONFIG_RESET_ARDUINO) {
-        ESP_LOGI(TAG, "ESP32 Rebooting...");
+        FLASH_LOGI("ESP32 manual Rebooting...");
         SSD1306_Fill(SSD1306_COLOR_BLACK);
         SSD1306_GotoXY(10, 0); 
         SSD1306_Puts("ESP32", &Font_7x10, SSD1306_COLOR_WHITE);
@@ -256,11 +257,10 @@ static void cb_up_shot(unsigned long time) {
         SSD1306_Puts("Reboot...", &Font_7x10, SSD1306_COLOR_WHITE);
         SSD1306_UpdateScreen();
         SSD1306_ON();
-        vTaskDelay(2000 / portTICK_RATE_MS);
-        esp_restart();
+        delayed_reboot(2000);
     }
     if (time > CONFIG_RESET_ARDUINO && time < CONFIG_SETUP_MODE_ESP32) {
-        ESP_LOGI(TAG, "Arduino Rebooting...");
+        FLASH_LOGI("Arduino manual Rebooting...");
         SSD1306_Fill(SSD1306_COLOR_BLACK);
         SSD1306_GotoXY(10, 0); 
         SSD1306_Puts("Arduino", &Font_7x10, SSD1306_COLOR_WHITE);
@@ -274,7 +274,7 @@ static void cb_up_shot(unsigned long time) {
         return;
     }
     if (time > CONFIG_SETUP_MODE_ESP32) {
-        ESP_LOGI(TAG, "ESP32 Setup mode runing..."); 
+        FLASH_LOGI("ESP32 Setup mode manual runing..."); 
         SSD1306_Fill(SSD1306_COLOR_BLACK);
         SSD1306_GotoXY(10, 0); 
         SSD1306_Puts("ESP32", &Font_7x10, SSD1306_COLOR_WHITE);
@@ -282,7 +282,6 @@ static void cb_up_shot(unsigned long time) {
         SSD1306_Puts("Setup...", &Font_7x10, SSD1306_COLOR_WHITE);
         SSD1306_UpdateScreen();
         SSD1306_ON();
-        vTaskDelay(2000 / portTICK_RATE_MS);
         wifi_manager_start_setup_mode();
     }
 }
@@ -312,8 +311,18 @@ static void cb_http_client_response(const char* data, int len) {
     
             // ESP_LOGI(TAG, "DATA: %s", r->data);
 
+            // Check order error code
+            cJSON* order = cJSON_GetObjectItem(root, CMD_CODE);
+            if(order) {
+                int code = order->valueint;
+                order = cJSON_GetObjectItem(root, CMD_MESSAGE);
+                ESP_LOGE(TAG, "HTTP error: [%d], [%s]", code, order->valuestring);
+                FLASH_LOGE("HTTP error: [%d], [%s]", code, order->valuestring);
+                return;
+            }
+
             // Check order set wifi access point mode
-            cJSON* order = cJSON_GetObjectItem(root, CMD_AP);
+            order = cJSON_GetObjectItem(root, CMD_AP);
             if (!order) {
                 ESP_LOGE(TAG, "JSON object [%s] not found", CMD_AP);
             }else {
@@ -329,9 +338,8 @@ static void cb_http_client_response(const char* data, int len) {
                 ESP_LOGE(TAG, "JSON object [%s] not found", CMD_REBOOT);
             }else {
                 if( order->valueint ) {
-                    ESP_LOGW(TAG, "REBOOT...");
-                    vTaskDelay(1000 / portTICK_RATE_MS);
-                    esp_restart();
+                    FLASH_LOGI("ESP32 soft Rebooting...");
+                    delayed_reboot(2000);
                 }
             }
             // Check order radsens setup
@@ -347,6 +355,7 @@ static void cb_http_client_response(const char* data, int len) {
                     }else {
                         if (radsens_set_hv_generator(state->valueint) == ESP_OK) {
                             ESP_LOGI(TAG, "RadSens HV: %s", (state->valueint == 0) ? "OFF" : "ON");
+                            FLASH_LOGI("RadSens HV: %s", (state->valueint == 0) ? "OFF" : "ON");
                         }else {
                             ESP_LOGE(TAG, "RadSens set HV fail");
                         }
@@ -357,6 +366,7 @@ static void cb_http_client_response(const char* data, int len) {
                     }else {
                         if( radsens_set_sensitivity(sensitivity->valueint) == ESP_OK){
                             ESP_LOGI(TAG, "RadSens set sensitivity: %d", sensitivity->valueint);
+                            FLASH_LOGI("RadSens set sensitivity: %d", sensitivity->valueint);
                         }else {
                             ESP_LOGE(TAG, "RadSens set sensitivity fail");
                         }
@@ -370,7 +380,7 @@ static void cb_http_client_response(const char* data, int len) {
             }else {
                 if( order->valueint ) {
                     ESP_LOGW(TAG, "Clear flash logging...");
-                    clear_flash_log();
+                    clear_flash_log();                    
                 }
             }
             // Check order reboot digispark
@@ -379,7 +389,8 @@ static void cb_http_client_response(const char* data, int len) {
                 ESP_LOGE(TAG, "JSON object [%s] not found", CMD_DIGISPARK_REBOOT);
             }else {
                 if( order->valueint ) {
-                    ESP_LOGW(TAG, "Arduino reboot...");
+                    ESP_LOGW(TAG, "Arduino soft reboot...");
+                    FLASH_LOGI("Arduino soft reboot...");
                     arduino_reset();
                 }
             }
@@ -610,6 +621,14 @@ void app_main(void)
     http_client_set_ready_callback(&cb_http_client_ready);
     http_client_set_not_ready_callback(&cb_http_client_not_ready);
 
+    /* Waiting for HTTP client initialization*/
+    xEventGroupWaitBits(
+            main_events,                // The event group being tested.
+            HC_STATUS_OK,               // The bits within the event group to wait for.
+            pdFALSE,                    // HC_STATUS_OK should be not cleared before returning.
+            pdFALSE,                    // Don't wait for both bits, either bit will do.
+            portMAX_DELAY );            // Wait until the bit be set.          
+
     /* GPIO configure */
     gpio_set_direction(ARDUINO_RST, GPIO_MODE_OUTPUT);
     gpio_set_level(ARDUINO_RST, 0);
@@ -636,12 +655,12 @@ void app_main(void)
     if(err == ESP_OK && ds18x20_sensor_count > 0){
         mr->ds18b20_status = SENSOR_OK;
         sprintf(mr->ds18b20_address, "%08X%08X", (uint32_t)(ds18x20_addrs >> 32), (uint32_t)ds18x20_addrs);
-        ESP_LOGI(TAG, "DS18B20 : %s initialisation success", mr->ds18b20_address);
-        FLASH_LOGI("DS18B20 : %s initialisation success", mr->ds18b20_address);
+        ESP_LOGI(TAG, "DS18B20 [%s] initialisation success", mr->ds18b20_address);
+        FLASH_LOGI("DS18B20 [%s] initialisation success", mr->ds18b20_address);
     }else{
         mr->ds18b20_status = SENSOR_INIT_FAIL;
-        ESP_LOGW(TAG, "%s: DS18B20 initialisation fail", esp_err_to_name(err));
-        FLASH_LOGW("%s: DS18B20 initialisation fail", esp_err_to_name(err));
+        ESP_LOGW(TAG, "DS18B20 initialisation fail: %s", (err == ESP_OK) ? "Not found sensors" : esp_err_to_name(err));
+        FLASH_LOGW("DS18B20 initialisation fail: %s", (err == ESP_OK) ? "Not found sensors" : esp_err_to_name(err));
     }
 
 
@@ -669,7 +688,7 @@ void app_main(void)
     }else{
         mr->bmp280_status = SENSOR_INIT_FAIL;
         ESP_LOGW(TAG, "BMX280 initialisation fail: %s", esp_err_to_name(err));
-        FLASH_LOGW("%s: %s initialisation fail", esp_err_to_name(err), bme280p ? "BME280" : "BMP280");
+        FLASH_LOGW("%s initialisation fail: %s", bme280p ? "BME280" : "BMP280", esp_err_to_name(err));
     }
 
     /* RADSENS Initialize */
@@ -692,7 +711,7 @@ void app_main(void)
     }else{
         mr->radsens_status = SENSOR_INIT_FAIL;
         ESP_LOGW(TAG, "Radsens initialisation fail");
-        FLASH_LOGW("%s: RadSens initialisation fail", esp_err_to_name(err));
+        FLASH_LOGW("RadSens initialisation fail: %s", esp_err_to_name(err));
     }
 
     /* ZE08 Initialize */
@@ -714,7 +733,7 @@ void app_main(void)
     }else{
         mr->ze08_status = SENSOR_INIT_FAIL;
         ESP_LOGW(TAG, "ZE08 initialisation fail");
-        FLASH_LOGW("%s: ZE08 initialisation fail", esp_err_to_name(err));
+        FLASH_LOGW("ZE08 initialisation fail: %s", esp_err_to_name(err));
     }
 
     /* MICS6814 Initialize */  
@@ -736,7 +755,7 @@ void app_main(void)
     }else{
         mr->mics6814_status = SENSOR_INIT_FAIL;
         ESP_LOGW(TAG, "MICS6814 initialisation fail");
-        FLASH_LOGW("%s: MICS6814 initialisation fail", esp_err_to_name(err));
+        FLASH_LOGW("MICS6814 initialisation fail: %s", esp_err_to_name(err));
     }
 
     /* AHT25 Initialize */  
@@ -760,15 +779,15 @@ void app_main(void)
         FLASH_LOGI("AHT25 initialisation success");
     }else{
         mr->aht25_status = SENSOR_INIT_FAIL;
-        ESP_LOGW(TAG, "AHT25 initialisation fail");
-        FLASH_LOGW("%s: AHT25 initialisation fail", esp_err_to_name(err));
+        ESP_LOGW(TAG, "AHT25 initialisation fail: %s", esp_err_to_name(err));
+        FLASH_LOGW("AHT25 initialisation fail: %s", esp_err_to_name(err));
     }
 
     // Create orders task
     xTaskCreate(&get_orders_task, "get_orders_task", 0x1000, NULL, CONFIG_WIFI_MANAGER_TASK_PRIORITY-2, NULL);
 
     if (ssd1306_status != ESP_OK) {
-        FLASH_LOGW("%s: SSD1306 initialisation fail", esp_err_to_name(ssd1306_status));
+        FLASH_LOGW("SSD1306 initialisation fail: %s", esp_err_to_name(ssd1306_status));
     }else {
         FLASH_LOGI("SSD1306 initialisation success");
         /* Create timer for press count */

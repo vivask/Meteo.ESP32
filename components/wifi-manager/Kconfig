@@ -221,13 +221,7 @@ menu "WIFI Manager Configuration"
             config OTA_TASK_CACHE_SIZE
                 hex "Cache size"
                 default 0x2000
-
-            config OTA_JSON_FIELD
-                string "OTA json field name"
-                default "firmware"
-                help
-                Specify OTA json field name.
-                
+               
         endif
 
     endmenu
