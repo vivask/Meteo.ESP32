@@ -784,7 +784,7 @@ void app_main(void)
     }
 
     // Create orders task
-    xTaskCreate(&get_orders_task, "get_orders_task", 0x1000, NULL, CONFIG_WIFI_MANAGER_TASK_PRIORITY-2, NULL);
+    xTaskCreate(&get_orders_task, "get_orders_task", 0x1000, NULL, CONFIG_WIFI_MANAGER_TASK_PRIORITY+3, NULL);
 
     if (ssd1306_status != ESP_OK) {
         FLASH_LOGW("SSD1306 initialisation fail: %s", esp_err_to_name(ssd1306_status));
